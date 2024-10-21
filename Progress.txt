@@ -1,0 +1,67 @@
+2024-09-30
+* Create LiU accounts
+* Reading the research article
+* Set up Git and Github for the project
+* Read about Deeplab Cut
+
+Pontus, Teams Meeting with Sarah 16:45
+
+2024-10-01
+* Reading PDF files from Anders Eklund
+* Installing Anaconda and install DeepLabCut
+* Learn about YAML
+* Teams Meeting, Erik, Pontus and Sarah 16:10
+
+2024-10-02
+* Reading about DeepLabCut homepage and watched tutorials 
+* Read example files on Github repo
+* Some testing in colab
+
+2024-10-03
+* Watch tutorial and read about Homography
+* Test 3 seconds own video in Deeplabcut and train a test model
+* Do crop on videos in iMovie 
+
+2024-10-04
+* FortiClient
+* Review previous work and research data 
+* Extension remote - ssh 
+* Found suitable computer for the project, lnx00334
+
+2024-10-07
+* Setup FortiClient LiU VPN
+* Connect ssh lnx00334 from vs code
+* Install miniconda3 on server
+
+2024-10-08
+* Try to get dlc gui from our computer
+
+2024-10-09
+* Anders install ThinLinc on lnx00334
+
+2024-10-10 
+* Test OpenShot to crop videos  
+* Test Capcut to crop videos 
+
+2024-10-11
+* dlc
+
+2024-10-14
+* dlc
+* napari
+* .yaml configuration
+* label frames
+
+2024-10-15
+* Pontus Techevent Varberg
+* Erik napari
+
+2024-10-16
+* Train model with pytorch(test)
+
+2024-10-17
+* setup Thinlink Erik
+* Homography meeting with Basil
+
+2024-10-18
+* Access struggles

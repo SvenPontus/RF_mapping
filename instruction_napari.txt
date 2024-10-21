@@ -1,0 +1,5 @@
+1. Plugins - keypoint control [V]
+2. Insert congif.yaml file in project folder
+3. Open frames
+4. Start label
+5. Save selected layers(creates csv and h5 files in labeled-data folder)

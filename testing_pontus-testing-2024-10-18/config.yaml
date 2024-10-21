@@ -1,0 +1,82 @@
+# Project definitions (do not edit)
+Task: testing_pontus
+scorer: testing
+date: Oct18
+multianimalproject: false
+identity:
+
+
+# Project path (change when moving around)
+project_path: /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18
+
+
+# Default DeepLabCut engine to use for shuffle creation (either pytorch or tensorflow)
+engine: pytorch
+
+
+# Annotation data set configuration (and individual video cropping parameters)
+video_sets:
+  /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretest.mp4:
+    crop: 0, 1274, 0, 720
+bodyparts:
+- FR1
+- FR2
+- FG1
+- FG2
+- FB1
+- FB2
+- Top_left
+- Top_right
+- Bottom_left
+- Bottom_right
+
+
+# Fraction of video to start/stop when extracting frames for labeling/refinement
+start: 0
+stop: 1
+numframes2pick: 20
+
+
+# Plotting configuration
+skeleton:
+- - bodypart1
+  - bodypart2
+- - objectA
+  - bodypart3
+skeleton_color: black
+pcutoff: 0.6
+dotsize: 12
+alphavalue: 0.7
+colormap: rainbow
+
+
+# Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.95
+iteration: 0
+default_net_type: resnet_50
+default_augmenter: default
+snapshotindex: -1
+detector_snapshotindex: -1
+batch_size: 8
+detector_batch_size: 1
+
+
+# Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+#if cropping is true for analysis, then set the values here:
+x1: 0
+x2: 640
+y1: 277
+y2: 624
+
+
+# Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
+corner2move2:
+- 50
+- 50
+move2corner: true
+
+
+# Conversion tables to fine-tune SuperAnimal weights
+SuperAnimalConversionTables:

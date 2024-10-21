@@ -1,0 +1,14 @@
+When deeplabcut installation is done,
+Run this line in terminal to launch the GUI: 
+    python -m deeplabcut
+
+Create new project
+    1. name your project
+    2. name of expirementer
+    3. specify filepath to where the project will be store
+    4. filepath to your videos
+        [V] select the videos you want to the project 
+    5. [V] copy videos to project folder
+
+Extract frames
+    
