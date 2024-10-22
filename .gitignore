@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 # My own ignore
 videos/
+Raw_videos_good/
+Raw_videos_not_good/

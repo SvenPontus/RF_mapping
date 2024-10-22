@@ -76,7 +76,3 @@ corner2move2:
 - 50
 - 50
 move2corner: true
-
-
-# Conversion tables to fine-tune SuperAnimal weights
-SuperAnimalConversionTables:

@@ -11,3 +11,6 @@ deeplabcut.train_network(config_path, maxiters=50_000, displayiters=100, saveite
 
 # Analyze a video with the trained model
 deeplabcut.analyze_videos(config_path, ['/local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretest.mp4'])
+
+# deeplabcut.evaluate_network(config_path, plotting=True)
+
