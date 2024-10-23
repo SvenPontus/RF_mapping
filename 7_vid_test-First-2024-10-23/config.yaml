@@ -1,0 +1,140 @@
+# Project definitions (do not edit)
+Task: 7_vid_test
+scorer: First
+date: Oct23
+multianimalproject: false
+identity:
+
+
+# Project path (change when moving around)
+project_path: /local/data2/LIA_LIU/7_vid_test-First-2024-10-23
+
+
+# Default DeepLabCut engine to use for shuffle creation (either pytorch or tensorflow)
+engine: pytorch
+
+
+# Annotation data set configuration (and individual video cropping parameters)
+video_sets:
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/RF mapping untracked.mp4:
+    crop: 0, 1274, 0, 720
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/smalltest.mp4:
+    crop: 0, 1274, 0, 720
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/1-1 (1).mp4:
+    crop: 0, 1400, 0, 788
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/1-2.mp4:
+    crop: 0, 1400, 0, 788
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/squaretest.mp4:
+    crop: 0, 1274, 0, 720
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/2-2k7-120-hand.mp4:
+    crop: 0, 1274, 0, 720
+  /local/data2/LIA_LIU/7_vid_test-First-2024-10-23/videos/240frames.mp4:
+    crop: 0, 1920, 0, 1080
+bodyparts:
+- FR1  # Top Red (Monofilament)
+- FR2  # Bottom Red (Monofilament)
+- FG1  # Top Green (Monofilament)
+- FG2  # Bottom Green (Monofilament)
+- FB1  # Top Blue (Monofilament)
+- FB2  # Bottom Blue (Monofilament)
+- Top_left  # Square Corner
+- Top_right  # Square Corner
+- Bottom_left  # Square Corner
+- Bottom_right  # Square Corner
+
+# Fraction of video to start/stop when extracting frames for labeling/refinement
+start: 0  # Beginning of the video (0 represents the start)
+stop: 1   # End of the video (1 represents the end)
+numframes2pick: 50  # Number of frames for labeling
+
+# Plotting configuration
+skeleton:
+# Monofilament
+- - FR1  # Top red
+  - FR2  # Bottom red
+- - FR2  # Bottom red
+  - FG1  # Top green
+- - FG1  # Top green
+  - FG2  # Bottom green
+- - FG2  # Bottom green
+  - FB1  # Top blue
+- - FB1  # Top blue
+  - FB2  # Bottom blue
+- - FB2  # Bottom blue
+# Square
+- - Top_left
+  - Top_right  
+- - Top_right
+  - Bottom_right
+- - Bottom_right
+  - Bottom_left
+- - Bottom_left
+  - Top_left
+
+
+skeleton_color: black
+pcutoff: 0.5  # Adjust as needed after testing
+dotsize: 4  # Size of the points representing body parts in the visualization
+alphavalue: 0.7  # Transparency level of the dots in visualizations
+colormap: viridis  # Adjust colormap as preferred
+
+# Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.90  # Proportion of your dataset that will be used for training the model
+iteration: 0
+default_net_type: resnet_101
+default_augmenter: default #(Set to false if using manual values)
+snapshotindex: -1  # How often the model will be saved (-1 = zero saves during training) 
+detector_snapshotindex: -1 # How often the model will be saved (-1 = zero saves during training)
+batch_size: 1  # Number of frames processed before updating weights
+detector_batch_size: 1  # Number of frames processed for detector updates before updating weights 
+
+# Augmentation parameters (uncomment to use and modify as needed)
+
+# Rotation range for images (degrees)
+# rotation: [-25, 25]  
+
+# Shear range for images (degrees)
+# shear: [-10, 10]  
+
+# Scaling factors (zoom) for images
+# zoom: [0.8, 1.2]  
+
+# Translation (shift) in pixels
+# translation: [10, 10]  # [x-offset, y-offset]
+
+# Probability of applying augmentations (0 to 1)
+# augmentationprobability: 0.5  
+
+# Brightness adjustment range
+# brightness: [0.8, 1.2]  
+
+# Contrast adjustment range
+# contrast: [0.8, 1.2]  
+
+# Gaussian blur strength
+# gaussian_blur: 0.5  
+
+# Hue adjustment range
+# hue: [-0.1, 0.1]  
+
+# Saturation adjustment range
+# saturation: [0.5, 1.5]  
+
+# Cutout parameters (masking out sections)
+# cutout: {n: 1, size: 0.1}  # number of cutouts, size as a fraction of the image
+
+# Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+# If cropping is true for analysis, then set the values here (in pixels):
+# x1: 0
+# x2: 0
+# y1: 0
+# y2: 0
+
+
+# Refinement configuration (parameters from annotation dataset configuration)
+corner2move2:
+- 50
+- 50
+move2corner: true
