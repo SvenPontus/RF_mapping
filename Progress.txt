@@ -72,3 +72,6 @@ Pontus, Teams Meeting with Sarah 16:45
 
 2024-10-22
 * Train models
+
+24-10-23
+* Started new project with 7 video and start labeled
