@@ -161,7 +161,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 # My own ignore
-videos/
+# videos/
 Raw_videos_good/
 Raw_videos_not_good/
 our_test_video/
