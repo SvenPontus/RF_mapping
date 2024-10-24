@@ -64,7 +64,7 @@ skeleton:
 
 skeleton_color: black
 pcutoff: 0.5  # Adjust as needed after testing
-dotsize: 12  # Size of the points representing body parts in the visualization
+dotsize: 4  # Size of the points representing body parts in the visualization
 alphavalue: 0.7  # Transparency level of the dots in visualizations
 colormap: viridis  # Adjust colormap as preferred
 

@@ -11,4 +11,5 @@ Create new project
     5. [V] copy videos to project folder
 
 Extract frames
+    1. Click on extract frames
     
