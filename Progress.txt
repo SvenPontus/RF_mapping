@@ -86,3 +86,8 @@ Pontus, Teams Meeting with Sarah 16:45
 24-10-28
 * evaluate model
 * set up new project  
+
+28-10-29
+* automation code for evaluate 
+* clean up in git commits
+* extract outliers
