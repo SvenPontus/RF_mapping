@@ -1,0 +1,1 @@
+Do instruction about miniconda3, python version, commands etc

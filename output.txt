@@ -1,502 +1,0 @@
-Training with configuration:
-data:
-  colormode: RGB
-  inference:
-    normalize_images: True
-  train:
-    affine:
-      p: 0.5
-      rotation: 30
-      scaling: [1.0, 1.0]
-      translation: 0
-    collate:
-      type: ResizeFromDataSizeCollate
-      min_scale: 0.4
-      max_scale: 1.0
-      min_short_side: 128
-      max_short_side: 1152
-      multiple_of: 32
-      to_square: False
-    covering: False
-    gaussian_noise: 12.75
-    hist_eq: False
-    motion_blur: False
-    normalize_images: True
-device: auto
-metadata:
-  project_path: /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18
-  pose_config_path: /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/dlc-models-pytorch/iteration-0/testing_pontusOct18-trainset95shuffle1/train/pose_cfg.yaml
-  bodyparts: ['FR1', 'FR2', 'FG1', 'FG2', 'FB1', 'FB2', 'Top_left', 'Top_right', 'Bottom_left', 'Bottom_right']
-  unique_bodyparts: []
-  individuals: ['animal']
-  with_identity: None
-method: bu
-model:
-  backbone:
-    type: ResNet
-    model_name: resnet50_gn
-    output_stride: 16
-    freeze_bn_stats: True
-    freeze_bn_weights: False
-  backbone_output_channels: 2048
-  heads:
-    bodypart:
-      type: HeatmapHead
-      weight_init: normal
-      predictor:
-        type: HeatmapPredictor
-        apply_sigmoid: False
-        clip_scores: True
-        location_refinement: True
-        locref_std: 7.2801
-      target_generator:
-        type: HeatmapGaussianGenerator
-        num_heatmaps: 10
-        pos_dist_thresh: 17
-        heatmap_mode: KEYPOINT
-        gradient_masking: False
-        generate_locref: True
-        locref_std: 7.2801
-      criterion:
-        heatmap:
-          type: WeightedMSECriterion
-          weight: 1.0
-        locref:
-          type: WeightedHuberCriterion
-          weight: 0.05
-      heatmap_config:
-        channels: [2048, 10]
-        kernel_size: [3]
-        strides: [2]
-      locref_config:
-        channels: [2048, 20]
-        kernel_size: [3]
-        strides: [2]
-net_type: resnet_50
-runner:
-  type: PoseTrainingRunner
-  gpus: None
-  key_metric: test.mAP
-  key_metric_asc: True
-  eval_interval: 10
-  optimizer:
-    type: AdamW
-    params:
-      lr: 0.0001
-  scheduler:
-    type: LRListScheduler
-    params:
-      lr_list: [[1e-05], [1e-06]]
-      milestones: [160, 190]
-  snapshots:
-    max_snapshots: 5
-    save_epochs: 25
-    save_optimizer_state: False
-train_settings:
-  batch_size: 1
-  dataloader_workers: 0
-  dataloader_pin_memory: False
-  display_iters: 100
-  epochs: 200
-  seed: 42
-Loading pretrained weights from Hugging Face hub (timm/resnet50_gn.a1h_in1k)
-[timm/resnet50_gn.a1h_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
-Data Transforms:
-  Training:   Compose([
-  Affine(always_apply=False, p=0.5, interpolation=1, mask_interpolation=0, cval=0, mode=0, scale={'x': (1.0, 1.0), 'y': (1.0, 1.0)}, translate_percent=None, translate_px={'x': (0, 0), 'y': (0, 0)}, rotate=(-30, 30), fit_output=False, shear={'x': (0.0, 0.0), 'y': (0.0, 0.0)}, cval_mask=0, keep_ratio=True, rotate_method='largest_box'),
-  GaussNoise(always_apply=False, p=0.5, var_limit=(0, 162.5625), per_channel=True, mean=0),
-  Normalize(always_apply=False, p=1.0, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0),
-], p=1.0, bbox_params={'format': 'coco', 'label_fields': ['bbox_labels'], 'min_area': 0.0, 'min_visibility': 0.0, 'min_width': 0.0, 'min_height': 0.0, 'check_each_transform': True}, keypoint_params={'format': 'xy', 'label_fields': ['class_labels'], 'remove_invisible': False, 'angle_in_degrees': True, 'check_each_transform': True}, additional_targets={}, is_check_shapes=True)
-  Validation: Compose([
-  Normalize(always_apply=False, p=1.0, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0),
-], p=1.0, bbox_params={'format': 'coco', 'label_fields': ['bbox_labels'], 'min_area': 0.0, 'min_visibility': 0.0, 'min_width': 0.0, 'min_height': 0.0, 'check_each_transform': True}, keypoint_params={'format': 'xy', 'label_fields': ['class_labels'], 'remove_invisible': False, 'angle_in_degrees': True, 'check_each_transform': True}, additional_targets={}, is_check_shapes=True)
-Using custom collate function: {'type': 'ResizeFromDataSizeCollate', 'min_scale': 0.4, 'max_scale': 1.0, 'min_short_side': 128, 'max_short_side': 1152, 'multiple_of': 32, 'to_square': False}
-
-Note: According to your model configuration, you're training with batch size 1 and/or ``freeze_bn_stats=false``. This is not an optimal setting if you have powerful GPUs.
-This is good for small batch sizes (e.g., when training on a CPU), where you should keep ``freeze_bn_stats=true``.
-If you're using a GPU to train, you can obtain faster performance by setting a larger batch size (the biggest power of 2 where you don't geta CUDA out-of-memory error, such as 8, 16, 32 or 64 depending on the model, size of your images, and GPU memory) and ``freeze_bn_stats=false`` for the backbone of your model. 
-This also allows you to increase the learning rate (empirically you can scale the learning rate by sqrt(batch_size) times).
-
-Using 19 images and 1 for testing
-
-Starting pose model training...
---------------------------------------------------
-Epoch 1/200 (lr=0.0001), train loss 0.01498
-Epoch 2/200 (lr=0.0001), train loss 0.01305
-Epoch 3/200 (lr=0.0001), train loss 0.01034
-Epoch 4/200 (lr=0.0001), train loss 0.00822
-Epoch 5/200 (lr=0.0001), train loss 0.00692
-Epoch 6/200 (lr=0.0001), train loss 0.00460
-Epoch 7/200 (lr=0.0001), train loss 0.00418
-Epoch 8/200 (lr=0.0001), train loss 0.00361
-Epoch 9/200 (lr=0.0001), train loss 0.00348
-Training for epoch 10 done, starting evaluation
-Epoch 10 performance:
-metrics/test.rmse:  3.906
-metrics/test.rmse_pcutoff:3.678
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.906
-metrics/test.rmse_detections_pcutoff:3.678
-Epoch 10/200 (lr=0.0001), train loss 0.00296, valid loss 0.00274
-Epoch 11/200 (lr=0.0001), train loss 0.00305
-Epoch 12/200 (lr=0.0001), train loss 0.00286
-Epoch 13/200 (lr=0.0001), train loss 0.00198
-Epoch 14/200 (lr=0.0001), train loss 0.00215
-Epoch 15/200 (lr=0.0001), train loss 0.00205
-Epoch 16/200 (lr=0.0001), train loss 0.00215
-Epoch 17/200 (lr=0.0001), train loss 0.00199
-Epoch 18/200 (lr=0.0001), train loss 0.00192
-Epoch 19/200 (lr=0.0001), train loss 0.00161
-Training for epoch 20 done, starting evaluation
-Epoch 20 performance:
-metrics/test.rmse:  3.373
-metrics/test.rmse_pcutoff:3.373
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.373
-metrics/test.rmse_detections_pcutoff:3.373
-Epoch 20/200 (lr=0.0001), train loss 0.00180, valid loss 0.00208
-Epoch 21/200 (lr=0.0001), train loss 0.00164
-Epoch 22/200 (lr=0.0001), train loss 0.00183
-Epoch 23/200 (lr=0.0001), train loss 0.00146
-Epoch 24/200 (lr=0.0001), train loss 0.00139
-Epoch 25/200 (lr=0.0001), train loss 0.00146
-Epoch 26/200 (lr=0.0001), train loss 0.00123
-Epoch 27/200 (lr=0.0001), train loss 0.00141
-Epoch 28/200 (lr=0.0001), train loss 0.00133
-Epoch 29/200 (lr=0.0001), train loss 0.00115
-Training for epoch 30 done, starting evaluation
-Epoch 30 performance:
-metrics/test.rmse:  3.219
-metrics/test.rmse_pcutoff:3.219
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.219
-metrics/test.rmse_detections_pcutoff:3.219
-Epoch 30/200 (lr=0.0001), train loss 0.00095, valid loss 0.00146
-Epoch 31/200 (lr=0.0001), train loss 0.00096
-Epoch 32/200 (lr=0.0001), train loss 0.00124
-Epoch 33/200 (lr=0.0001), train loss 0.00114
-Epoch 34/200 (lr=0.0001), train loss 0.00101
-Epoch 35/200 (lr=0.0001), train loss 0.00123
-Epoch 36/200 (lr=0.0001), train loss 0.00106
-Epoch 37/200 (lr=0.0001), train loss 0.00101
-Epoch 38/200 (lr=0.0001), train loss 0.00083
-Epoch 39/200 (lr=0.0001), train loss 0.00085
-Training for epoch 40 done, starting evaluation
-Epoch 40 performance:
-metrics/test.rmse:  2.541
-metrics/test.rmse_pcutoff:2.541
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:2.541
-metrics/test.rmse_detections_pcutoff:2.541
-Epoch 40/200 (lr=0.0001), train loss 0.00083, valid loss 0.00124
-Epoch 41/200 (lr=0.0001), train loss 0.00079
-Epoch 42/200 (lr=0.0001), train loss 0.00077
-Epoch 43/200 (lr=0.0001), train loss 0.00078
-Epoch 44/200 (lr=0.0001), train loss 0.00090
-Epoch 45/200 (lr=0.0001), train loss 0.00107
-Epoch 46/200 (lr=0.0001), train loss 0.00104
-Epoch 47/200 (lr=0.0001), train loss 0.00096
-Epoch 48/200 (lr=0.0001), train loss 0.00089
-Epoch 49/200 (lr=0.0001), train loss 0.00084
-Training for epoch 50 done, starting evaluation
-Epoch 50 performance:
-metrics/test.rmse:  3.215
-metrics/test.rmse_pcutoff:3.215
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.215
-metrics/test.rmse_detections_pcutoff:3.215
-Epoch 50/200 (lr=0.0001), train loss 0.00078, valid loss 0.00168
-Epoch 51/200 (lr=0.0001), train loss 0.00080
-Epoch 52/200 (lr=0.0001), train loss 0.00108
-Epoch 53/200 (lr=0.0001), train loss 0.00095
-Epoch 54/200 (lr=0.0001), train loss 0.00096
-Epoch 55/200 (lr=0.0001), train loss 0.00083
-Epoch 56/200 (lr=0.0001), train loss 0.00072
-Epoch 57/200 (lr=0.0001), train loss 0.00074
-Epoch 58/200 (lr=0.0001), train loss 0.00064
-Epoch 59/200 (lr=0.0001), train loss 0.00057
-Training for epoch 60 done, starting evaluation
-Epoch 60 performance:
-metrics/test.rmse:  4.196
-metrics/test.rmse_pcutoff:4.196
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:4.196
-metrics/test.rmse_detections_pcutoff:4.196
-Epoch 60/200 (lr=0.0001), train loss 0.00059, valid loss 0.00238
-Epoch 61/200 (lr=0.0001), train loss 0.00060
-Epoch 62/200 (lr=0.0001), train loss 0.00075
-Epoch 63/200 (lr=0.0001), train loss 0.00067
-Epoch 64/200 (lr=0.0001), train loss 0.00060
-Epoch 65/200 (lr=0.0001), train loss 0.00071
-Epoch 66/200 (lr=0.0001), train loss 0.00077
-Epoch 67/200 (lr=0.0001), train loss 0.00074
-Epoch 68/200 (lr=0.0001), train loss 0.00074
-Epoch 69/200 (lr=0.0001), train loss 0.00063
-Training for epoch 70 done, starting evaluation
-Epoch 70 performance:
-metrics/test.rmse:  3.293
-metrics/test.rmse_pcutoff:3.293
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.293
-metrics/test.rmse_detections_pcutoff:3.293
-Epoch 70/200 (lr=0.0001), train loss 0.00061, valid loss 0.00140
-Epoch 71/200 (lr=0.0001), train loss 0.00057
-Epoch 72/200 (lr=0.0001), train loss 0.00057
-Epoch 73/200 (lr=0.0001), train loss 0.00070
-Epoch 74/200 (lr=0.0001), train loss 0.00065
-Epoch 75/200 (lr=0.0001), train loss 0.00070
-Epoch 76/200 (lr=0.0001), train loss 0.00068
-Epoch 77/200 (lr=0.0001), train loss 0.00065
-Epoch 78/200 (lr=0.0001), train loss 0.00054
-Epoch 79/200 (lr=0.0001), train loss 0.00059
-Training for epoch 80 done, starting evaluation
-Epoch 80 performance:
-metrics/test.rmse:  3.523
-metrics/test.rmse_pcutoff:3.523
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.523
-metrics/test.rmse_detections_pcutoff:3.523
-Epoch 80/200 (lr=0.0001), train loss 0.00050, valid loss 0.00165
-Epoch 81/200 (lr=0.0001), train loss 0.00060
-Epoch 82/200 (lr=0.0001), train loss 0.00058
-Epoch 83/200 (lr=0.0001), train loss 0.00047
-Epoch 84/200 (lr=0.0001), train loss 0.00050
-Epoch 85/200 (lr=0.0001), train loss 0.00061
-Epoch 86/200 (lr=0.0001), train loss 0.00041
-Epoch 87/200 (lr=0.0001), train loss 0.00062
-Epoch 88/200 (lr=0.0001), train loss 0.00062
-Epoch 89/200 (lr=0.0001), train loss 0.00056
-Training for epoch 90 done, starting evaluation
-Epoch 90 performance:
-metrics/test.rmse:  3.830
-metrics/test.rmse_pcutoff:3.900
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.830
-metrics/test.rmse_detections_pcutoff:3.900
-Epoch 90/200 (lr=0.0001), train loss 0.00062, valid loss 0.00201
-Epoch 91/200 (lr=0.0001), train loss 0.00072
-Epoch 92/200 (lr=0.0001), train loss 0.00055
-Epoch 93/200 (lr=0.0001), train loss 0.00052
-Epoch 94/200 (lr=0.0001), train loss 0.00050
-Epoch 95/200 (lr=0.0001), train loss 0.00052
-Epoch 96/200 (lr=0.0001), train loss 0.00057
-Epoch 97/200 (lr=0.0001), train loss 0.00056
-Epoch 98/200 (lr=0.0001), train loss 0.00047
-Epoch 99/200 (lr=0.0001), train loss 0.00059
-Training for epoch 100 done, starting evaluation
-Epoch 100 performance:
-metrics/test.rmse:  3.469
-metrics/test.rmse_pcutoff:3.469
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.469
-metrics/test.rmse_detections_pcutoff:3.469
-Epoch 100/200 (lr=0.0001), train loss 0.00056, valid loss 0.00153
-Epoch 101/200 (lr=0.0001), train loss 0.00056
-Epoch 102/200 (lr=0.0001), train loss 0.00054
-Epoch 103/200 (lr=0.0001), train loss 0.00043
-Epoch 104/200 (lr=0.0001), train loss 0.00051
-Epoch 105/200 (lr=0.0001), train loss 0.00046
-Epoch 106/200 (lr=0.0001), train loss 0.00052
-Epoch 107/200 (lr=0.0001), train loss 0.00040
-Epoch 108/200 (lr=0.0001), train loss 0.00035
-Epoch 109/200 (lr=0.0001), train loss 0.00040
-Training for epoch 110 done, starting evaluation
-Epoch 110 performance:
-metrics/test.rmse:  3.169
-metrics/test.rmse_pcutoff:3.169
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.169
-metrics/test.rmse_detections_pcutoff:3.169
-Epoch 110/200 (lr=0.0001), train loss 0.00044, valid loss 0.00136
-Epoch 111/200 (lr=0.0001), train loss 0.00047
-Epoch 112/200 (lr=0.0001), train loss 0.00042
-Epoch 113/200 (lr=0.0001), train loss 0.00050
-Epoch 114/200 (lr=0.0001), train loss 0.00047
-Epoch 115/200 (lr=0.0001), train loss 0.00049
-Epoch 116/200 (lr=0.0001), train loss 0.00044
-Epoch 117/200 (lr=0.0001), train loss 0.00045
-Epoch 118/200 (lr=0.0001), train loss 0.00036
-Epoch 119/200 (lr=0.0001), train loss 0.00045
-Training for epoch 120 done, starting evaluation
-Epoch 120 performance:
-metrics/test.rmse:  3.610
-metrics/test.rmse_pcutoff:3.610
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.610
-metrics/test.rmse_detections_pcutoff:3.610
-Epoch 120/200 (lr=0.0001), train loss 0.00040, valid loss 0.00163
-Epoch 121/200 (lr=0.0001), train loss 0.00037
-Epoch 122/200 (lr=0.0001), train loss 0.00033
-Epoch 123/200 (lr=0.0001), train loss 0.00042
-Epoch 124/200 (lr=0.0001), train loss 0.00047
-Epoch 125/200 (lr=0.0001), train loss 0.00067
-Epoch 126/200 (lr=0.0001), train loss 0.00064
-Epoch 127/200 (lr=0.0001), train loss 0.00053
-Epoch 128/200 (lr=0.0001), train loss 0.00049
-Epoch 129/200 (lr=0.0001), train loss 0.00046
-Training for epoch 130 done, starting evaluation
-Epoch 130 performance:
-metrics/test.rmse:  2.937
-metrics/test.rmse_pcutoff:2.937
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:2.937
-metrics/test.rmse_detections_pcutoff:2.937
-Epoch 130/200 (lr=0.0001), train loss 0.00051, valid loss 0.00122
-Epoch 131/200 (lr=0.0001), train loss 0.00039
-Epoch 132/200 (lr=0.0001), train loss 0.00037
-Epoch 133/200 (lr=0.0001), train loss 0.00045
-Epoch 134/200 (lr=0.0001), train loss 0.00044
-Epoch 135/200 (lr=0.0001), train loss 0.00046
-Epoch 136/200 (lr=0.0001), train loss 0.00044
-Epoch 137/200 (lr=0.0001), train loss 0.00046
-Epoch 138/200 (lr=0.0001), train loss 0.00039
-Epoch 139/200 (lr=0.0001), train loss 0.00043
-Training for epoch 140 done, starting evaluation
-Epoch 140 performance:
-metrics/test.rmse:  2.942
-metrics/test.rmse_pcutoff:2.942
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:2.942
-metrics/test.rmse_detections_pcutoff:2.942
-Epoch 140/200 (lr=0.0001), train loss 0.00038, valid loss 0.00122
-Epoch 141/200 (lr=0.0001), train loss 0.00036
-Epoch 142/200 (lr=0.0001), train loss 0.00038
-Epoch 143/200 (lr=0.0001), train loss 0.00028
-Epoch 144/200 (lr=0.0001), train loss 0.00040
-Epoch 145/200 (lr=0.0001), train loss 0.00032
-Epoch 146/200 (lr=0.0001), train loss 0.00048
-Epoch 147/200 (lr=0.0001), train loss 0.00037
-Epoch 148/200 (lr=0.0001), train loss 0.00039
-Epoch 149/200 (lr=0.0001), train loss 0.00043
-Training for epoch 150 done, starting evaluation
-Epoch 150 performance:
-metrics/test.rmse:  3.725
-metrics/test.rmse_pcutoff:3.725
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.725
-metrics/test.rmse_detections_pcutoff:3.725
-Epoch 150/200 (lr=0.0001), train loss 0.00039, valid loss 0.00184
-Epoch 151/200 (lr=0.0001), train loss 0.00043
-Epoch 152/200 (lr=0.0001), train loss 0.00039
-Epoch 153/200 (lr=0.0001), train loss 0.00038
-Epoch 154/200 (lr=0.0001), train loss 0.00038
-Epoch 155/200 (lr=0.0001), train loss 0.00034
-Epoch 156/200 (lr=0.0001), train loss 0.00044
-Epoch 157/200 (lr=0.0001), train loss 0.00036
-Epoch 158/200 (lr=0.0001), train loss 0.00040
-Epoch 159/200 (lr=0.0001), train loss 0.00050
-Training for epoch 160 done, starting evaluation
-Epoch 160 performance:
-metrics/test.rmse:  2.825
-metrics/test.rmse_pcutoff:2.825
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:2.825
-metrics/test.rmse_detections_pcutoff:2.825
-Epoch 160/200 (lr=1e-05), train loss 0.00041, valid loss 0.00122
-Epoch 161/200 (lr=1e-05), train loss 0.00047
-Epoch 162/200 (lr=1e-05), train loss 0.00026
-Epoch 163/200 (lr=1e-05), train loss 0.00021
-Epoch 164/200 (lr=1e-05), train loss 0.00026
-Epoch 165/200 (lr=1e-05), train loss 0.00021
-Epoch 166/200 (lr=1e-05), train loss 0.00019
-Epoch 167/200 (lr=1e-05), train loss 0.00026
-Epoch 168/200 (lr=1e-05), train loss 0.00026
-Epoch 169/200 (lr=1e-05), train loss 0.00021
-Training for epoch 170 done, starting evaluation
-Epoch 170 performance:
-metrics/test.rmse:  3.054
-metrics/test.rmse_pcutoff:3.054
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.054
-metrics/test.rmse_detections_pcutoff:3.054
-Epoch 170/200 (lr=1e-05), train loss 0.00019, valid loss 0.00114
-Epoch 171/200 (lr=1e-05), train loss 0.00023
-Epoch 172/200 (lr=1e-05), train loss 0.00022
-Epoch 173/200 (lr=1e-05), train loss 0.00020
-Epoch 174/200 (lr=1e-05), train loss 0.00025
-Epoch 175/200 (lr=1e-05), train loss 0.00021
-Epoch 176/200 (lr=1e-05), train loss 0.00021
-Epoch 177/200 (lr=1e-05), train loss 0.00023
-Epoch 178/200 (lr=1e-05), train loss 0.00021
-Epoch 179/200 (lr=1e-05), train loss 0.00020
-Training for epoch 180 done, starting evaluation
-Epoch 180 performance:
-metrics/test.rmse:  3.024
-metrics/test.rmse_pcutoff:3.024
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.024
-metrics/test.rmse_detections_pcutoff:3.024
-Epoch 180/200 (lr=1e-05), train loss 0.00018, valid loss 0.00110
-Epoch 181/200 (lr=1e-05), train loss 0.00023
-Epoch 182/200 (lr=1e-05), train loss 0.00020
-Epoch 183/200 (lr=1e-05), train loss 0.00025
-Epoch 184/200 (lr=1e-05), train loss 0.00027
-Epoch 185/200 (lr=1e-05), train loss 0.00021
-Epoch 186/200 (lr=1e-05), train loss 0.00016
-Epoch 187/200 (lr=1e-05), train loss 0.00019
-Epoch 188/200 (lr=1e-05), train loss 0.00021
-Epoch 189/200 (lr=1e-05), train loss 0.00016
-Training for epoch 190 done, starting evaluation
-Epoch 190 performance:
-metrics/test.rmse:  2.987
-metrics/test.rmse_pcutoff:2.987
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:2.987
-metrics/test.rmse_detections_pcutoff:2.987
-Epoch 190/200 (lr=1e-06), train loss 0.00018, valid loss 0.00107
-Epoch 191/200 (lr=1e-06), train loss 0.00022
-Epoch 192/200 (lr=1e-06), train loss 0.00021
-Epoch 193/200 (lr=1e-06), train loss 0.00016
-Epoch 194/200 (lr=1e-06), train loss 0.00018
-Epoch 195/200 (lr=1e-06), train loss 0.00016
-Epoch 196/200 (lr=1e-06), train loss 0.00020
-Epoch 197/200 (lr=1e-06), train loss 0.00025
-Epoch 198/200 (lr=1e-06), train loss 0.00020
-Epoch 199/200 (lr=1e-06), train loss 0.00020
-Training for epoch 200 done, starting evaluation
-Epoch 200 performance:
-metrics/test.rmse:  3.048
-metrics/test.rmse_pcutoff:3.048
-metrics/test.mAP:   100.000
-metrics/test.mAR:   100.000
-metrics/test.rmse_detections:3.048
-metrics/test.rmse_detections_pcutoff:3.048
-Epoch 200/200 (lr=1e-06), train loss 0.00014, valid loss 0.00112
-/home/ponsi25/miniconda3/envs/DEEPLABCUT/lib/python3.10/site-packages/deeplabcut/pose_estimation_pytorch/runners/base.py:66: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  snapshot = torch.load(snapshot_path, map_location=device)
-Loading DLC 3.0.0rc5...
-The training dataset is successfully created. Use the function 'train_network' to start training. Happy training!
-Analyzing videos with /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/dlc-models-pytorch/iteration-0/testing_pontusOct18-trainset95shuffle1/train/snapshot-200.pt
-Starting to analyze /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretest.mp4
-Video metadata: 
-  Overall # of frames:    963
-  Duration of video [s]:  38.52
-  fps:                    25.0
-  resolution:             w=1274, h=720
-
-Running pose prediction with batch size 8
-  0%|          | 0/963 [00:00<?, ?it/s]  1%|          | 5/963 [00:00<00:22, 43.03it/s]  1%|          | 10/963 [00:00<00:30, 31.41it/s]  2%|▏         | 16/963 [00:00<00:31, 29.68it/s]  2%|▏         | 23/963 [00:00<00:24, 39.06it/s]  3%|▎         | 28/963 [00:00<00:27, 34.36it/s]  3%|▎         | 32/963 [00:00<00:30, 30.06it/s]  4%|▍         | 39/963 [00:01<00:24, 38.22it/s]  5%|▍         | 44/963 [00:01<00:26, 34.58it/s]  5%|▍         | 48/963 [00:01<00:30, 30.10it/s]  6%|▌         | 55/963 [00:01<00:24, 37.52it/s]  6%|▌         | 60/963 [00:01<00:26, 34.15it/s]  7%|▋         | 64/963 [00:01<00:29, 30.15it/s]  7%|▋         | 71/963 [00:02<00:23, 37.55it/s]  8%|▊         | 76/963 [00:02<00:25, 34.20it/s]  8%|▊         | 80/963 [00:02<00:29, 30.13it/s]  9%|▉         | 87/963 [00:02<00:23, 37.76it/s] 10%|▉         | 92/963 [00:02<00:25, 34.45it/s] 10%|▉         | 96/963 [00:02<00:28, 30.43it/s] 11%|█         | 103/963 [00:02<00:22, 38.18it/s] 11%|█         | 108/963 [00:03<00:24, 34.44it/s] 12%|█▏        | 112/963 [00:03<00:27, 30.46it/s] 12%|█▏        | 119/963 [00:03<00:22, 38.11it/s] 13%|█▎        | 124/963 [00:03<00:24, 34.46it/s] 13%|█▎        | 128/963 [00:03<00:27, 30.48it/s] 14%|█▍        | 135/963 [00:03<00:21, 38.28it/s] 15%|█▍        | 140/963 [00:04<00:23, 34.74it/s] 15%|█▍        | 144/963 [00:04<00:26, 30.68it/s] 16%|█▌        | 151/963 [00:04<00:21, 38.07it/s] 16%|█▌        | 156/963 [00:04<00:23, 34.57it/s] 17%|█▋        | 160/963 [00:04<00:26, 30.56it/s] 17%|█▋        | 167/963 [00:04<00:20, 38.04it/s] 18%|█▊        | 172/963 [00:05<00:22, 34.54it/s] 18%|█▊        | 176/963 [00:05<00:25, 30.30it/s] 19%|█▉        | 183/963 [00:05<00:20, 37.93it/s] 20%|█▉        | 188/963 [00:05<00:22, 34.39it/s] 20%|█▉        | 192/963 [00:05<00:25, 30.31it/s] 21%|██        | 199/963 [00:05<00:20, 37.73it/s] 21%|██        | 204/963 [00:05<00:22, 34.31it/s] 22%|██▏       | 208/963 [00:06<00:24, 30.30it/s] 22%|██▏       | 215/963 [00:06<00:19, 37.78it/s] 23%|██▎       | 220/963 [00:06<00:21, 34.38it/s] 23%|██▎       | 224/963 [00:06<00:24, 30.40it/s] 24%|██▍       | 231/963 [00:06<00:19, 37.94it/s] 25%|██▍       | 236/963 [00:06<00:21, 34.54it/s] 25%|██▍       | 240/963 [00:07<00:23, 30.47it/s] 26%|██▌       | 247/963 [00:07<00:18, 38.12it/s] 26%|██▌       | 252/963 [00:07<00:20, 34.72it/s] 27%|██▋       | 256/963 [00:07<00:23, 30.63it/s] 27%|██▋       | 263/963 [00:07<00:18, 38.17it/s] 28%|██▊       | 268/963 [00:07<00:20, 34.72it/s] 28%|██▊       | 272/963 [00:08<00:22, 30.66it/s] 29%|██▉       | 279/963 [00:08<00:17, 38.25it/s] 29%|██▉       | 284/963 [00:08<00:19, 34.75it/s] 30%|██▉       | 288/963 [00:08<00:22, 30.67it/s] 31%|███       | 295/963 [00:08<00:17, 38.27it/s] 31%|███       | 300/963 [00:08<00:19, 34.77it/s] 32%|███▏      | 304/963 [00:08<00:21, 30.66it/s] 32%|███▏      | 311/963 [00:09<00:17, 38.20it/s] 33%|███▎      | 316/963 [00:09<00:18, 34.66it/s] 33%|███▎      | 320/963 [00:09<00:21, 30.57it/s] 34%|███▍      | 327/963 [00:09<00:16, 37.85it/s] 34%|███▍      | 332/963 [00:09<00:18, 34.35it/s] 35%|███▍      | 336/963 [00:09<00:20, 30.26it/s] 36%|███▌      | 343/963 [00:10<00:16, 37.57it/s] 36%|███▌      | 348/963 [00:10<00:17, 34.28it/s] 37%|███▋      | 352/963 [00:10<00:20, 30.21it/s] 37%|███▋      | 359/963 [00:10<00:16, 37.74it/s] 38%|███▊      | 364/963 [00:10<00:17, 34.31it/s] 38%|███▊      | 368/963 [00:10<00:19, 30.20it/s] 39%|███▉      | 375/963 [00:10<00:15, 37.56it/s] 39%|███▉      | 380/963 [00:11<00:17, 33.73it/s] 40%|███▉      | 384/963 [00:11<00:19, 29.94it/s] 41%|████      | 391/963 [00:11<00:15, 37.45it/s] 41%|████      | 396/963 [00:11<00:16, 34.01it/s] 42%|████▏     | 400/963 [00:11<00:18, 30.10it/s] 42%|████▏     | 407/963 [00:11<00:14, 37.24it/s] 43%|████▎     | 412/963 [00:12<00:16, 34.04it/s] 43%|████▎     | 416/963 [00:12<00:18, 30.05it/s] 44%|████▍     | 423/963 [00:12<00:14, 37.56it/s] 44%|████▍     | 428/963 [00:12<00:15, 34.32it/s] 45%|████▍     | 432/963 [00:12<00:17, 30.20it/s] 46%|████▌     | 439/963 [00:12<00:14, 37.01it/s] 46%|████▌     | 444/963 [00:13<00:15, 33.87it/s] 47%|████▋     | 448/963 [00:13<00:17, 29.94it/s] 47%|████▋     | 455/963 [00:13<00:13, 36.98it/s] 48%|████▊     | 460/963 [00:13<00:14, 34.02it/s] 48%|████▊     | 464/963 [00:13<00:16, 30.02it/s] 49%|████▉     | 471/963 [00:13<00:13, 36.55it/s] 49%|████▉     | 475/963 [00:13<00:14, 32.63it/s] 50%|████▉     | 480/963 [00:14<00:16, 29.97it/s] 51%|█████     | 487/963 [00:14<00:12, 36.86it/s] 51%|█████     | 492/963 [00:14<00:13, 33.74it/s] 52%|█████▏    | 496/963 [00:14<00:15, 29.93it/s] 52%|█████▏    | 503/963 [00:14<00:12, 37.12it/s] 53%|█████▎    | 508/963 [00:14<00:13, 34.18it/s] 53%|█████▎    | 512/963 [00:15<00:14, 30.26it/s] 54%|█████▍    | 519/963 [00:15<00:11, 37.42it/s] 54%|█████▍    | 524/963 [00:15<00:12, 34.32it/s] 55%|█████▍    | 528/963 [00:15<00:14, 30.36it/s] 56%|█████▌    | 535/963 [00:15<00:11, 37.50it/s] 56%|█████▌    | 540/963 [00:15<00:12, 34.34it/s] 56%|█████▋    | 544/963 [00:16<00:13, 30.34it/s] 57%|█████▋    | 551/963 [00:16<00:11, 37.30it/s] 58%|█████▊    | 556/963 [00:16<00:11, 34.21it/s] 58%|█████▊    | 560/963 [00:16<00:13, 30.29it/s] 59%|█████▉    | 567/963 [00:16<00:10, 37.32it/s] 59%|█████▉    | 572/963 [00:16<00:11, 34.23it/s] 60%|█████▉    | 576/963 [00:17<00:12, 30.30it/s] 61%|██████    | 583/963 [00:17<00:10, 37.30it/s] 61%|██████    | 588/963 [00:17<00:10, 34.25it/s] 61%|██████▏   | 592/963 [00:17<00:12, 30.19it/s] 62%|██████▏   | 599/963 [00:17<00:09, 37.14it/s] 63%|██████▎   | 604/963 [00:17<00:10, 34.16it/s] 63%|██████▎   | 608/963 [00:17<00:11, 30.14it/s] 64%|██████▍   | 615/963 [00:18<00:09, 37.26it/s] 64%|██████▍   | 620/963 [00:18<00:10, 34.26it/s] 65%|██████▍   | 624/963 [00:18<00:11, 30.31it/s] 66%|██████▌   | 631/963 [00:18<00:08, 37.32it/s] 66%|██████▌   | 636/963 [00:18<00:09, 34.29it/s] 66%|██████▋   | 640/963 [00:18<00:10, 30.24it/s] 67%|██████▋   | 647/963 [00:19<00:08, 37.31it/s] 68%|██████▊   | 652/963 [00:19<00:09, 34.29it/s] 68%|██████▊   | 656/963 [00:19<00:10, 30.24it/s] 69%|██████▉   | 663/963 [00:19<00:08, 37.32it/s] 69%|██████▉   | 668/963 [00:19<00:08, 34.27it/s] 70%|██████▉   | 672/963 [00:19<00:09, 30.32it/s] 71%|███████   | 679/963 [00:19<00:07, 37.27it/s] 71%|███████   | 684/963 [00:20<00:08, 34.25it/s] 71%|███████▏  | 688/963 [00:20<00:09, 30.19it/s] 72%|███████▏  | 695/963 [00:20<00:07, 37.30it/s] 73%|███████▎  | 700/963 [00:20<00:07, 34.25it/s] 73%|███████▎  | 704/963 [00:20<00:08, 30.23it/s] 74%|███████▍  | 711/963 [00:20<00:06, 37.33it/s] 74%|███████▍  | 716/963 [00:21<00:07, 34.26it/s] 75%|███████▍  | 720/963 [00:21<00:08, 30.24it/s] 75%|███████▌  | 727/963 [00:21<00:06, 37.26it/s] 76%|███████▌  | 732/963 [00:21<00:06, 34.10it/s] 76%|███████▋  | 736/963 [00:21<00:07, 30.02it/s] 77%|███████▋  | 743/963 [00:21<00:05, 37.21it/s] 78%|███████▊  | 748/963 [00:22<00:06, 34.19it/s] 78%|███████▊  | 752/963 [00:22<00:07, 30.14it/s] 79%|███████▉  | 759/963 [00:22<00:05, 36.94it/s] 79%|███████▉  | 764/963 [00:22<00:05, 34.01it/s] 80%|███████▉  | 768/963 [00:22<00:06, 29.97it/s] 80%|████████  | 774/963 [00:22<00:05, 36.11it/s] 81%|████████  | 779/963 [00:22<00:05, 33.14it/s] 81%|████████▏ | 784/963 [00:23<00:05, 30.54it/s] 82%|████████▏ | 791/963 [00:23<00:04, 37.22it/s] 83%|████████▎ | 796/963 [00:23<00:04, 34.20it/s] 83%|████████▎ | 800/963 [00:23<00:05, 30.25it/s] 84%|████████▎ | 806/963 [00:23<00:04, 36.32it/s] 84%|████████▍ | 811/963 [00:23<00:04, 33.19it/s] 85%|████████▍ | 816/963 [00:24<00:04, 30.48it/s] 85%|████████▌ | 822/963 [00:24<00:03, 36.22it/s] 86%|████████▌ | 827/963 [00:24<00:04, 33.13it/s] 86%|████████▋ | 832/963 [00:24<00:04, 30.49it/s] 87%|████████▋ | 839/963 [00:24<00:03, 37.09it/s] 88%|████████▊ | 844/963 [00:24<00:03, 34.14it/s] 88%|████████▊ | 848/963 [00:25<00:03, 30.27it/s] 89%|████████▉ | 855/963 [00:25<00:02, 37.04it/s] 89%|████████▉ | 860/963 [00:25<00:03, 34.05it/s] 90%|████████▉ | 864/963 [00:25<00:03, 30.19it/s] 90%|█████████ | 870/963 [00:25<00:02, 36.06it/s] 91%|█████████ | 875/963 [00:25<00:02, 33.10it/s] 91%|█████████▏| 880/963 [00:26<00:02, 30.45it/s] 92%|█████████▏| 887/963 [00:26<00:02, 37.23it/s] 93%|█████████▎| 892/963 [00:26<00:02, 34.14it/s] 93%|█████████▎| 896/963 [00:26<00:02, 30.07it/s] 94%|█████████▍| 903/963 [00:26<00:01, 37.25it/s] 94%|█████████▍| 908/963 [00:26<00:01, 34.10it/s] 95%|█████████▍| 912/963 [00:27<00:01, 30.19it/s] 95%|█████████▌| 919/963 [00:27<00:01, 37.56it/s] 96%|█████████▌| 924/963 [00:27<00:01, 34.26it/s] 96%|█████████▋| 928/963 [00:27<00:01, 30.19it/s] 97%|█████████▋| 935/963 [00:27<00:00, 37.32it/s] 98%|█████████▊| 940/963 [00:27<00:00, 34.18it/s] 98%|█████████▊| 944/963 [00:27<00:00, 29.98it/s] 99%|█████████▉| 951/963 [00:28<00:00, 37.61it/s] 99%|█████████▉| 956/963 [00:28<00:00, 34.45it/s]100%|█████████▉| 960/963 [00:28<00:00, 30.54it/s]100%|██████████| 963/963 [00:28<00:00, 33.85it/s]
-Saving results in /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretestDLC_Resnet50_testing_pontusOct18shuffle1_snapshot_200.h5 and /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretestDLC_Resnet50_testing_pontusOct18shuffle1_snapshot_200_full.pickle
-The videos are analyzed. Now your research can truly start!
-You can create labeled videos with 'create_labeled_video'.
-If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames.
-
