@@ -91,3 +91,6 @@ Pontus, Teams Meeting with Sarah 16:45
 * automation code for evaluate 
 * clean up in git commits
 * extract outliers
+
+29-10-30
+* Struggle with relabeling in napari

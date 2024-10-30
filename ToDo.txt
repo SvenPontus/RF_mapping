@@ -1,0 +1,8 @@
+Start relabling 240frames_converted 
+
+Skeleton improvment?
+
+Test different neural networks
+
+
+
