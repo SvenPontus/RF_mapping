@@ -94,3 +94,7 @@ Pontus, Teams Meeting with Sarah 16:45
 
 29-10-30
 * Struggle with relabeling in napari
+
+30-10-31
+* Relabling
+* Tried to change in .h5 file
