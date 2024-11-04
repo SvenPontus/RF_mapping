@@ -97,7 +97,7 @@ class DLCProjectHelper:
                     print(line.strip())
         except Exception as e:
             print(f"Couldn't read log file: {log_file_path}: {e}")
-    
+
     @staticmethod
     def get_config_and_video_paths(project_path):
         """
@@ -115,7 +115,33 @@ class DLCProjectHelper:
             A tuple containing the path to the config.yaml file (str)
             and a list of paths to video files (list of str).
         """
-
+        try:
+            # Find config file path
+            config_path = os.path.join(project_path, 'config.yaml')
+            if not os.path.exists(config_path):
+                raise FileNotFoundError("Config file not found in project path.")
+            
+            # Gather paths of all videos in the project path
+            video_dir = os.path.join(project_path, 'videos')
+            if not os.path.exists(video_dir):
+                raise FileNotFoundError("Video directory not found in project path.")
+            
+            video_path = [os.path.join(video_dir, f) for f in os.listdir(video_dir) if f.endswith(('.mp4', '.avi'))]
+            
+            if not video_path:
+                raise FileNotFoundError("No video files found in the video directory.")
+            
+            return config_path, video_path
+        
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+            return None, []
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return None, []
+"""  
+    @staticmethod
+    def get_config_and_video_paths(project_path):
         # Find config file path
         config_path = os.path.join(project_path, 'config.yaml')
         if not os.path.exists(config_path):
@@ -127,3 +153,7 @@ class DLCProjectHelper:
                         os.listdir(video_dir) if f.endswith(('.mp4', '.avi'))]
         
         return config_path, video_path
+"""  
+
+
+

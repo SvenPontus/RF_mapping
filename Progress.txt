@@ -73,28 +73,32 @@ Pontus, Teams Meeting with Sarah 16:45
 2024-10-22
 * Train models
 
-24-10-23
+2024-10-23
 * Started new project with 7 video and start labeled
 
-24-10-24
+2024-10-24
 * label frames
 
-24-10-25
+2024-10-25
 * Zoom meeting
 * label frames 
 
-24-10-28
+2024-10-28
 * evaluate model
 * set up new project  
 
-28-10-29
+2024-10-29
 * automation code for evaluate 
 * clean up in git commits
 * extract outliers
 
-29-10-30
+2024-10-30
 * Struggle with relabeling in napari
 
-30-10-31
+2024-10-31
 * Relabling
 * Tried to change in .h5 file
+
+2024-11-04
+* Start new project res_50
+* Instruction documents

@@ -1,5 +1,6 @@
 import deeplabcut
-
+from dlcprojecthelper import DLCProjectHelper as dph
+"""
 video_path = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/test_10_000_epochs-conv_vid-2024-10-28/videos/' 
 
 # Specify the path to your config.yaml file
@@ -38,4 +39,10 @@ deeplabcut.create_labeled_video(config_path, [
                                         video_path + 'squaretest_converted.mp4',
                                         '/local/data2/LIA_LIU_PONTUS/LIA_LIU/untrained_videos/GH010342_converted.mp4'
                                         ])
+"""
 
+project_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_50_test-conv_vid-2024-11-04"
+
+config_path, video_path = dph.get_config_and_video_paths(project_path=project_path)
+
+deeplabcut.train_network(config_path)

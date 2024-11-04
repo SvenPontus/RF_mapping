@@ -1,0 +1,628 @@
+Training with configuration:
+data:
+  colormode: RGB
+  inference:
+    normalize_images: True
+  train:
+    affine:
+      p: 0.5
+      rotation: 30
+      scaling: [1.0, 1.0]
+      translation: 0
+    collate:
+      type: ResizeFromDataSizeCollate
+      min_scale: 0.4
+      max_scale: 1.0
+      min_short_side: 128
+      max_short_side: 1152
+      multiple_of: 32
+      to_square: False
+    covering: False
+    gaussian_noise: 12.75
+    hist_eq: False
+    motion_blur: False
+    normalize_images: True
+device: auto
+metadata:
+  project_path: /local/data2/LIA_LIU_PONTUS/LIA_LIU/res_50_test-conv_vid-2024-11-04
+  pose_config_path: /local/data2/LIA_LIU_PONTUS/LIA_LIU/res_50_test-conv_vid-2024-11-04/dlc-models-pytorch/iteration-1/res_50_testNov4-trainset90shuffle1/train/pose_cfg.yaml
+  bodyparts: ['FR1', 'FR2', 'FG1', 'FG2', 'FB1', 'FB2', 'Top_left', 'Top_right', 'Bottom_left', 'Bottom_right']
+  unique_bodyparts: []
+  individuals: ['animal']
+  with_identity: None
+method: bu
+model:
+  backbone:
+    type: ResNet
+    model_name: resnet50_gn
+    output_stride: 16
+    freeze_bn_stats: True
+    freeze_bn_weights: False
+  backbone_output_channels: 2048
+  heads:
+    bodypart:
+      type: HeatmapHead
+      weight_init: normal
+      predictor:
+        type: HeatmapPredictor
+        apply_sigmoid: False
+        clip_scores: True
+        location_refinement: True
+        locref_std: 7.2801
+      target_generator:
+        type: HeatmapGaussianGenerator
+        num_heatmaps: 10
+        pos_dist_thresh: 17
+        heatmap_mode: KEYPOINT
+        gradient_masking: False
+        generate_locref: True
+        locref_std: 7.2801
+      criterion:
+        heatmap:
+          type: WeightedMSECriterion
+          weight: 1.0
+        locref:
+          type: WeightedHuberCriterion
+          weight: 0.05
+      heatmap_config:
+        channels: [2048, 10]
+        kernel_size: [3]
+        strides: [2]
+      locref_config:
+        channels: [2048, 20]
+        kernel_size: [3]
+        strides: [2]
+net_type: resnet_50
+runner:
+  type: PoseTrainingRunner
+  gpus: None
+  key_metric: test.mAP
+  key_metric_asc: True
+  eval_interval: 10
+  optimizer:
+    type: AdamW
+    params:
+      lr: 0.0001
+  scheduler:
+    type: LRListScheduler
+    params:
+      lr_list: [[1e-05], [1e-06]]
+      milestones: [160, 190]
+  snapshots:
+    max_snapshots: 5
+    save_epochs: 25
+    save_optimizer_state: False
+train_settings:
+  batch_size: 2
+  dataloader_workers: 0
+  dataloader_pin_memory: False
+  display_iters: 500
+  epochs: 2500
+  seed: 42
+Loading pretrained weights from Hugging Face hub (timm/resnet50_gn.a1h_in1k)
+[timm/resnet50_gn.a1h_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Data Transforms:
+  Training:   Compose([
+  Affine(always_apply=False, p=0.5, interpolation=1, mask_interpolation=0, cval=0, mode=0, scale={'x': (1.0, 1.0), 'y': (1.0, 1.0)}, translate_percent=None, translate_px={'x': (0, 0), 'y': (0, 0)}, rotate=(-30, 30), fit_output=False, shear={'x': (0.0, 0.0), 'y': (0.0, 0.0)}, cval_mask=0, keep_ratio=True, rotate_method='largest_box'),
+  GaussNoise(always_apply=False, p=0.5, var_limit=(0, 162.5625), per_channel=True, mean=0),
+  Normalize(always_apply=False, p=1.0, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0),
+], p=1.0, bbox_params={'format': 'coco', 'label_fields': ['bbox_labels'], 'min_area': 0.0, 'min_visibility': 0.0, 'min_width': 0.0, 'min_height': 0.0, 'check_each_transform': True}, keypoint_params={'format': 'xy', 'label_fields': ['class_labels'], 'remove_invisible': False, 'angle_in_degrees': True, 'check_each_transform': True}, additional_targets={}, is_check_shapes=True)
+  Validation: Compose([
+  Normalize(always_apply=False, p=1.0, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0),
+], p=1.0, bbox_params={'format': 'coco', 'label_fields': ['bbox_labels'], 'min_area': 0.0, 'min_visibility': 0.0, 'min_width': 0.0, 'min_height': 0.0, 'check_each_transform': True}, keypoint_params={'format': 'xy', 'label_fields': ['class_labels'], 'remove_invisible': False, 'angle_in_degrees': True, 'check_each_transform': True}, additional_targets={}, is_check_shapes=True)
+Using custom collate function: {'type': 'ResizeFromDataSizeCollate', 'min_scale': 0.4, 'max_scale': 1.0, 'min_short_side': 128, 'max_short_side': 1152, 'multiple_of': 32, 'to_square': False}
+
+Note: According to your model configuration, you're training with batch size 1 and/or ``freeze_bn_stats=false``. This is not an optimal setting if you have powerful GPUs.
+This is good for small batch sizes (e.g., when training on a CPU), where you should keep ``freeze_bn_stats=true``.
+If you're using a GPU to train, you can obtain faster performance by setting a larger batch size (the biggest power of 2 where you don't geta CUDA out-of-memory error, such as 8, 16, 32 or 64 depending on the model, size of your images, and GPU memory) and ``freeze_bn_stats=false`` for the backbone of your model. 
+This also allows you to increase the learning rate (empirically you can scale the learning rate by sqrt(batch_size) times).
+
+Using 468 images and 52 for testing
+
+Starting pose model training...
+--------------------------------------------------
+Epoch 1/2500 (lr=0.0001), train loss 0.00802
+Epoch 2/2500 (lr=0.0001), train loss 0.00337
+Epoch 3/2500 (lr=0.0001), train loss 0.00249
+Epoch 4/2500 (lr=0.0001), train loss 0.00194
+Epoch 5/2500 (lr=0.0001), train loss 0.00175
+Epoch 6/2500 (lr=0.0001), train loss 0.00153
+Epoch 7/2500 (lr=0.0001), train loss 0.00139
+Epoch 8/2500 (lr=0.0001), train loss 0.00123
+Epoch 9/2500 (lr=0.0001), train loss 0.00110
+Training for epoch 10 done, starting evaluation
+Epoch 10 performance:
+metrics/test.rmse:  3.349
+metrics/test.rmse_pcutoff:2.975
+metrics/test.mAP:   96.276
+metrics/test.mAR:   97.885
+metrics/test.rmse_detections:3.349
+metrics/test.rmse_detections_pcutoff:2.975
+Epoch 10/2500 (lr=0.0001), train loss 0.00107, valid loss 0.00086
+Epoch 11/2500 (lr=0.0001), train loss 0.00097
+Epoch 12/2500 (lr=0.0001), train loss 0.00096
+Epoch 13/2500 (lr=0.0001), train loss 0.00091
+Epoch 14/2500 (lr=0.0001), train loss 0.00080
+Epoch 15/2500 (lr=0.0001), train loss 0.00088
+Epoch 16/2500 (lr=0.0001), train loss 0.00081
+Epoch 17/2500 (lr=0.0001), train loss 0.00079
+Epoch 18/2500 (lr=0.0001), train loss 0.00078
+Epoch 19/2500 (lr=0.0001), train loss 0.00079
+Training for epoch 20 done, starting evaluation
+Epoch 20 performance:
+metrics/test.rmse:  2.392
+metrics/test.rmse_pcutoff:2.070
+metrics/test.mAP:   98.953
+metrics/test.mAR:   99.231
+metrics/test.rmse_detections:2.392
+metrics/test.rmse_detections_pcutoff:2.070
+Epoch 20/2500 (lr=0.0001), train loss 0.00072, valid loss 0.00065
+Epoch 21/2500 (lr=0.0001), train loss 0.00074
+Epoch 22/2500 (lr=0.0001), train loss 0.00073
+Epoch 23/2500 (lr=0.0001), train loss 0.00066
+Epoch 24/2500 (lr=0.0001), train loss 0.00066
+Epoch 25/2500 (lr=0.0001), train loss 0.00062
+Epoch 26/2500 (lr=0.0001), train loss 0.00060
+Epoch 27/2500 (lr=0.0001), train loss 0.00065
+Epoch 28/2500 (lr=0.0001), train loss 0.00064
+Epoch 29/2500 (lr=0.0001), train loss 0.00059
+Training for epoch 30 done, starting evaluation
+Epoch 30 performance:
+metrics/test.rmse:  2.831
+metrics/test.rmse_pcutoff:2.819
+metrics/test.mAP:   97.186
+metrics/test.mAR:   98.077
+metrics/test.rmse_detections:2.831
+metrics/test.rmse_detections_pcutoff:2.819
+Epoch 30/2500 (lr=0.0001), train loss 0.00057, valid loss 0.00058
+Epoch 31/2500 (lr=0.0001), train loss 0.00054
+Epoch 32/2500 (lr=0.0001), train loss 0.00051
+Epoch 33/2500 (lr=0.0001), train loss 0.00051
+Epoch 34/2500 (lr=0.0001), train loss 0.00054
+Epoch 35/2500 (lr=0.0001), train loss 0.00053
+Epoch 36/2500 (lr=0.0001), train loss 0.00056
+Epoch 37/2500 (lr=0.0001), train loss 0.00051
+Epoch 38/2500 (lr=0.0001), train loss 0.00052
+Epoch 39/2500 (lr=0.0001), train loss 0.00051
+Training for epoch 40 done, starting evaluation
+Epoch 40 performance:
+metrics/test.rmse:  1.614
+metrics/test.rmse_pcutoff:1.571
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.614
+metrics/test.rmse_detections_pcutoff:1.571
+Epoch 40/2500 (lr=0.0001), train loss 0.00049, valid loss 0.00053
+Epoch 41/2500 (lr=0.0001), train loss 0.00048
+Epoch 42/2500 (lr=0.0001), train loss 0.00044
+Epoch 43/2500 (lr=0.0001), train loss 0.00046
+Epoch 44/2500 (lr=0.0001), train loss 0.00050
+Epoch 45/2500 (lr=0.0001), train loss 0.00048
+Epoch 46/2500 (lr=0.0001), train loss 0.00045
+Epoch 47/2500 (lr=0.0001), train loss 0.00045
+Epoch 48/2500 (lr=0.0001), train loss 0.00045
+Epoch 49/2500 (lr=0.0001), train loss 0.00044
+Training for epoch 50 done, starting evaluation
+Epoch 50 performance:
+metrics/test.rmse:  2.029
+metrics/test.rmse_pcutoff:1.962
+metrics/test.mAP:   99.543
+metrics/test.mAR:   99.615
+metrics/test.rmse_detections:2.029
+metrics/test.rmse_detections_pcutoff:1.962
+Epoch 50/2500 (lr=0.0001), train loss 0.00045, valid loss 0.00054
+Epoch 51/2500 (lr=0.0001), train loss 0.00045
+Epoch 52/2500 (lr=0.0001), train loss 0.00038
+Epoch 53/2500 (lr=0.0001), train loss 0.00044
+Epoch 54/2500 (lr=0.0001), train loss 0.00042
+Epoch 55/2500 (lr=0.0001), train loss 0.00046
+Epoch 56/2500 (lr=0.0001), train loss 0.00042
+Epoch 57/2500 (lr=0.0001), train loss 0.00040
+Epoch 58/2500 (lr=0.0001), train loss 0.00042
+Epoch 59/2500 (lr=0.0001), train loss 0.00037
+Training for epoch 60 done, starting evaluation
+Epoch 60 performance:
+metrics/test.rmse:  2.072
+metrics/test.rmse_pcutoff:1.805
+metrics/test.mAP:   99.543
+metrics/test.mAR:   99.615
+metrics/test.rmse_detections:2.072
+metrics/test.rmse_detections_pcutoff:1.805
+Epoch 60/2500 (lr=0.0001), train loss 0.00042, valid loss 0.00056
+Epoch 61/2500 (lr=0.0001), train loss 0.00040
+Epoch 62/2500 (lr=0.0001), train loss 0.00037
+Epoch 63/2500 (lr=0.0001), train loss 0.00039
+Epoch 64/2500 (lr=0.0001), train loss 0.00036
+Epoch 65/2500 (lr=0.0001), train loss 0.00036
+Epoch 66/2500 (lr=0.0001), train loss 0.00034
+Epoch 67/2500 (lr=0.0001), train loss 0.00041
+Epoch 68/2500 (lr=0.0001), train loss 0.00035
+Epoch 69/2500 (lr=0.0001), train loss 0.00035
+Training for epoch 70 done, starting evaluation
+Epoch 70 performance:
+metrics/test.rmse:  1.879
+metrics/test.rmse_pcutoff:1.739
+metrics/test.mAP:   99.543
+metrics/test.mAR:   99.615
+metrics/test.rmse_detections:1.879
+metrics/test.rmse_detections_pcutoff:1.739
+Epoch 70/2500 (lr=0.0001), train loss 0.00041, valid loss 0.00049
+Epoch 71/2500 (lr=0.0001), train loss 0.00037
+Epoch 72/2500 (lr=0.0001), train loss 0.00037
+Epoch 73/2500 (lr=0.0001), train loss 0.00034
+Epoch 74/2500 (lr=0.0001), train loss 0.00034
+Epoch 75/2500 (lr=0.0001), train loss 0.00034
+Epoch 76/2500 (lr=0.0001), train loss 0.00035
+Epoch 77/2500 (lr=0.0001), train loss 0.00035
+Epoch 78/2500 (lr=0.0001), train loss 0.00031
+Epoch 79/2500 (lr=0.0001), train loss 0.00032
+Training for epoch 80 done, starting evaluation
+Epoch 80 performance:
+metrics/test.rmse:  1.907
+metrics/test.rmse_pcutoff:1.849
+metrics/test.mAP:   99.543
+metrics/test.mAR:   99.615
+metrics/test.rmse_detections:1.907
+metrics/test.rmse_detections_pcutoff:1.849
+Epoch 80/2500 (lr=0.0001), train loss 0.00031, valid loss 0.00050
+Epoch 81/2500 (lr=0.0001), train loss 0.00038
+Epoch 82/2500 (lr=0.0001), train loss 0.00034
+Epoch 83/2500 (lr=0.0001), train loss 0.00034
+Epoch 84/2500 (lr=0.0001), train loss 0.00033
+Epoch 85/2500 (lr=0.0001), train loss 0.00034
+Epoch 86/2500 (lr=0.0001), train loss 0.00030
+Epoch 87/2500 (lr=0.0001), train loss 0.00030
+Epoch 88/2500 (lr=0.0001), train loss 0.00030
+Epoch 89/2500 (lr=0.0001), train loss 0.00031
+Training for epoch 90 done, starting evaluation
+Epoch 90 performance:
+metrics/test.rmse:  1.910
+metrics/test.rmse_pcutoff:1.852
+metrics/test.mAP:   99.543
+metrics/test.mAR:   99.615
+metrics/test.rmse_detections:1.910
+metrics/test.rmse_detections_pcutoff:1.852
+Epoch 90/2500 (lr=0.0001), train loss 0.00028, valid loss 0.00051
+Epoch 91/2500 (lr=0.0001), train loss 0.00030
+Epoch 92/2500 (lr=0.0001), train loss 0.00033
+Epoch 93/2500 (lr=0.0001), train loss 0.00038
+Epoch 94/2500 (lr=0.0001), train loss 0.00034
+Epoch 95/2500 (lr=0.0001), train loss 0.00030
+Epoch 96/2500 (lr=0.0001), train loss 0.00027
+Epoch 97/2500 (lr=0.0001), train loss 0.00030
+Epoch 98/2500 (lr=0.0001), train loss 0.00030
+Epoch 99/2500 (lr=0.0001), train loss 0.00028
+Training for epoch 100 done, starting evaluation
+Epoch 100 performance:
+metrics/test.rmse:  1.619
+metrics/test.rmse_pcutoff:1.572
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.619
+metrics/test.rmse_detections_pcutoff:1.572
+Epoch 100/2500 (lr=0.0001), train loss 0.00028, valid loss 0.00051
+Epoch 101/2500 (lr=0.0001), train loss 0.00032
+Epoch 102/2500 (lr=0.0001), train loss 0.00032
+Epoch 103/2500 (lr=0.0001), train loss 0.00030
+Epoch 104/2500 (lr=0.0001), train loss 0.00034
+Epoch 105/2500 (lr=0.0001), train loss 0.00031
+Epoch 106/2500 (lr=0.0001), train loss 0.00026
+Epoch 107/2500 (lr=0.0001), train loss 0.00029
+Epoch 108/2500 (lr=0.0001), train loss 0.00027
+Epoch 109/2500 (lr=0.0001), train loss 0.00027
+Training for epoch 110 done, starting evaluation
+Epoch 110 performance:
+metrics/test.rmse:  1.843
+metrics/test.rmse_pcutoff:1.586
+metrics/test.mAP:   99.699
+metrics/test.mAR:   99.808
+metrics/test.rmse_detections:1.843
+metrics/test.rmse_detections_pcutoff:1.586
+Epoch 110/2500 (lr=0.0001), train loss 0.00027, valid loss 0.00058
+Epoch 111/2500 (lr=0.0001), train loss 0.00026
+Epoch 112/2500 (lr=0.0001), train loss 0.00028
+Epoch 113/2500 (lr=0.0001), train loss 0.00031
+Epoch 114/2500 (lr=0.0001), train loss 0.00029
+Epoch 115/2500 (lr=0.0001), train loss 0.00030
+Epoch 116/2500 (lr=0.0001), train loss 0.00025
+Epoch 117/2500 (lr=0.0001), train loss 0.00029
+Epoch 118/2500 (lr=0.0001), train loss 0.00026
+Epoch 119/2500 (lr=0.0001), train loss 0.00026
+Training for epoch 120 done, starting evaluation
+Epoch 120 performance:
+metrics/test.rmse:  1.509
+metrics/test.rmse_pcutoff:1.469
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.509
+metrics/test.rmse_detections_pcutoff:1.469
+Epoch 120/2500 (lr=0.0001), train loss 0.00024, valid loss 0.00045
+Epoch 121/2500 (lr=0.0001), train loss 0.00026
+Epoch 122/2500 (lr=0.0001), train loss 0.00028
+Epoch 123/2500 (lr=0.0001), train loss 0.00033
+Epoch 124/2500 (lr=0.0001), train loss 0.00028
+Epoch 125/2500 (lr=0.0001), train loss 0.00025
+Epoch 126/2500 (lr=0.0001), train loss 0.00024
+Epoch 127/2500 (lr=0.0001), train loss 0.00033
+Epoch 128/2500 (lr=0.0001), train loss 0.00028
+Epoch 129/2500 (lr=0.0001), train loss 0.00024
+Training for epoch 130 done, starting evaluation
+Epoch 130 performance:
+metrics/test.rmse:  1.601
+metrics/test.rmse_pcutoff:1.527
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.601
+metrics/test.rmse_detections_pcutoff:1.527
+Epoch 130/2500 (lr=0.0001), train loss 0.00024, valid loss 0.00047
+Epoch 131/2500 (lr=0.0001), train loss 0.00023
+Epoch 132/2500 (lr=0.0001), train loss 0.00025
+Epoch 133/2500 (lr=0.0001), train loss 0.00024
+Epoch 134/2500 (lr=0.0001), train loss 0.00023
+Epoch 135/2500 (lr=0.0001), train loss 0.00024
+Epoch 136/2500 (lr=0.0001), train loss 0.00022
+Epoch 137/2500 (lr=0.0001), train loss 0.00023
+Epoch 138/2500 (lr=0.0001), train loss 0.00024
+Epoch 139/2500 (lr=0.0001), train loss 0.00024
+Training for epoch 140 done, starting evaluation
+Epoch 140 performance:
+metrics/test.rmse:  1.555
+metrics/test.rmse_pcutoff:1.474
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.555
+metrics/test.rmse_detections_pcutoff:1.474
+Epoch 140/2500 (lr=0.0001), train loss 0.00029, valid loss 0.00046
+Epoch 141/2500 (lr=0.0001), train loss 0.00024
+Epoch 142/2500 (lr=0.0001), train loss 0.00025
+Epoch 143/2500 (lr=0.0001), train loss 0.00023
+Epoch 144/2500 (lr=0.0001), train loss 0.00027
+Epoch 145/2500 (lr=0.0001), train loss 0.00024
+Epoch 146/2500 (lr=0.0001), train loss 0.00025
+Epoch 147/2500 (lr=0.0001), train loss 0.00023
+Epoch 148/2500 (lr=0.0001), train loss 0.00022
+Epoch 149/2500 (lr=0.0001), train loss 0.00021
+Training for epoch 150 done, starting evaluation
+Epoch 150 performance:
+metrics/test.rmse:  1.555
+metrics/test.rmse_pcutoff:1.468
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.555
+metrics/test.rmse_detections_pcutoff:1.468
+Epoch 150/2500 (lr=0.0001), train loss 0.00021, valid loss 0.00047
+Epoch 151/2500 (lr=0.0001), train loss 0.00022
+Epoch 152/2500 (lr=0.0001), train loss 0.00023
+Epoch 153/2500 (lr=0.0001), train loss 0.00022
+Epoch 154/2500 (lr=0.0001), train loss 0.00025
+Epoch 155/2500 (lr=0.0001), train loss 0.00025
+Epoch 156/2500 (lr=0.0001), train loss 0.00025
+Epoch 157/2500 (lr=0.0001), train loss 0.00022
+Epoch 158/2500 (lr=0.0001), train loss 0.00023
+Epoch 159/2500 (lr=0.0001), train loss 0.00022
+Training for epoch 160 done, starting evaluation
+Epoch 160 performance:
+metrics/test.rmse:  1.660
+metrics/test.rmse_pcutoff:1.561
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.660
+metrics/test.rmse_detections_pcutoff:1.561
+Epoch 160/2500 (lr=1e-05), train loss 0.00024, valid loss 0.00051
+Epoch 161/2500 (lr=1e-05), train loss 0.00018
+Epoch 162/2500 (lr=1e-05), train loss 0.00016
+Epoch 163/2500 (lr=1e-05), train loss 0.00016
+Epoch 164/2500 (lr=1e-05), train loss 0.00015
+Epoch 165/2500 (lr=1e-05), train loss 0.00015
+Epoch 166/2500 (lr=1e-05), train loss 0.00015
+Epoch 167/2500 (lr=1e-05), train loss 0.00015
+Epoch 168/2500 (lr=1e-05), train loss 0.00014
+Epoch 169/2500 (lr=1e-05), train loss 0.00014
+Training for epoch 170 done, starting evaluation
+Epoch 170 performance:
+metrics/test.rmse:  1.489
+metrics/test.rmse_pcutoff:1.406
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.489
+metrics/test.rmse_detections_pcutoff:1.406
+Epoch 170/2500 (lr=1e-05), train loss 0.00014, valid loss 0.00045
+Epoch 171/2500 (lr=1e-05), train loss 0.00014
+Epoch 172/2500 (lr=1e-05), train loss 0.00014
+Epoch 173/2500 (lr=1e-05), train loss 0.00014
+Epoch 174/2500 (lr=1e-05), train loss 0.00014
+Epoch 175/2500 (lr=1e-05), train loss 0.00014
+Epoch 176/2500 (lr=1e-05), train loss 0.00014
+Epoch 177/2500 (lr=1e-05), train loss 0.00014
+Epoch 178/2500 (lr=1e-05), train loss 0.00013
+Epoch 179/2500 (lr=1e-05), train loss 0.00013
+Training for epoch 180 done, starting evaluation
+Epoch 180 performance:
+metrics/test.rmse:  1.451
+metrics/test.rmse_pcutoff:1.398
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.451
+metrics/test.rmse_detections_pcutoff:1.398
+Epoch 180/2500 (lr=1e-05), train loss 0.00013, valid loss 0.00045
+Epoch 181/2500 (lr=1e-05), train loss 0.00013
+Epoch 182/2500 (lr=1e-05), train loss 0.00013
+Epoch 183/2500 (lr=1e-05), train loss 0.00013
+Epoch 184/2500 (lr=1e-05), train loss 0.00013
+Epoch 185/2500 (lr=1e-05), train loss 0.00013
+Epoch 186/2500 (lr=1e-05), train loss 0.00012
+Epoch 187/2500 (lr=1e-05), train loss 0.00014
+Epoch 188/2500 (lr=1e-05), train loss 0.00013
+Epoch 189/2500 (lr=1e-05), train loss 0.00013
+Training for epoch 190 done, starting evaluation
+Epoch 190 performance:
+metrics/test.rmse:  1.450
+metrics/test.rmse_pcutoff:1.398
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.450
+metrics/test.rmse_detections_pcutoff:1.398
+Epoch 190/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00044
+Epoch 191/2500 (lr=1e-06), train loss 0.00012
+Epoch 192/2500 (lr=1e-06), train loss 0.00013
+Epoch 193/2500 (lr=1e-06), train loss 0.00012
+Epoch 194/2500 (lr=1e-06), train loss 0.00012
+Epoch 195/2500 (lr=1e-06), train loss 0.00012
+Epoch 196/2500 (lr=1e-06), train loss 0.00012
+Epoch 197/2500 (lr=1e-06), train loss 0.00012
+Epoch 198/2500 (lr=1e-06), train loss 0.00011
+Epoch 199/2500 (lr=1e-06), train loss 0.00013
+Training for epoch 200 done, starting evaluation
+Epoch 200 performance:
+metrics/test.rmse:  1.445
+metrics/test.rmse_pcutoff:1.392
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.445
+metrics/test.rmse_detections_pcutoff:1.392
+Epoch 200/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00044
+Epoch 201/2500 (lr=1e-06), train loss 0.00012
+Epoch 202/2500 (lr=1e-06), train loss 0.00012
+Epoch 203/2500 (lr=1e-06), train loss 0.00012
+Epoch 204/2500 (lr=1e-06), train loss 0.00013
+Epoch 205/2500 (lr=1e-06), train loss 0.00012
+Epoch 206/2500 (lr=1e-06), train loss 0.00012
+Epoch 207/2500 (lr=1e-06), train loss 0.00013
+Epoch 208/2500 (lr=1e-06), train loss 0.00012
+Epoch 209/2500 (lr=1e-06), train loss 0.00012
+Training for epoch 210 done, starting evaluation
+Epoch 210 performance:
+metrics/test.rmse:  1.442
+metrics/test.rmse_pcutoff:1.389
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.442
+metrics/test.rmse_detections_pcutoff:1.389
+Epoch 210/2500 (lr=1e-06), train loss 0.00011, valid loss 0.00044
+Epoch 211/2500 (lr=1e-06), train loss 0.00012
+Epoch 212/2500 (lr=1e-06), train loss 0.00011
+Epoch 213/2500 (lr=1e-06), train loss 0.00012
+Epoch 214/2500 (lr=1e-06), train loss 0.00012
+Epoch 215/2500 (lr=1e-06), train loss 0.00012
+Epoch 216/2500 (lr=1e-06), train loss 0.00012
+Epoch 217/2500 (lr=1e-06), train loss 0.00012
+Epoch 218/2500 (lr=1e-06), train loss 0.00011
+Epoch 219/2500 (lr=1e-06), train loss 0.00012
+Training for epoch 220 done, starting evaluation
+Epoch 220 performance:
+metrics/test.rmse:  1.441
+metrics/test.rmse_pcutoff:1.388
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.441
+metrics/test.rmse_detections_pcutoff:1.388
+Epoch 220/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00045
+Epoch 221/2500 (lr=1e-06), train loss 0.00011
+Epoch 222/2500 (lr=1e-06), train loss 0.00012
+Epoch 223/2500 (lr=1e-06), train loss 0.00012
+Epoch 224/2500 (lr=1e-06), train loss 0.00011
+Epoch 225/2500 (lr=1e-06), train loss 0.00012
+Epoch 226/2500 (lr=1e-06), train loss 0.00012
+Epoch 227/2500 (lr=1e-06), train loss 0.00012
+Epoch 228/2500 (lr=1e-06), train loss 0.00012
+Epoch 229/2500 (lr=1e-06), train loss 0.00012
+Training for epoch 230 done, starting evaluation
+Epoch 230 performance:
+metrics/test.rmse:  1.446
+metrics/test.rmse_pcutoff:1.393
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.446
+metrics/test.rmse_detections_pcutoff:1.393
+Epoch 230/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00045
+Epoch 231/2500 (lr=1e-06), train loss 0.00012
+Epoch 232/2500 (lr=1e-06), train loss 0.00011
+Epoch 233/2500 (lr=1e-06), train loss 0.00012
+Epoch 234/2500 (lr=1e-06), train loss 0.00012
+Epoch 235/2500 (lr=1e-06), train loss 0.00012
+Epoch 236/2500 (lr=1e-06), train loss 0.00011
+Epoch 237/2500 (lr=1e-06), train loss 0.00012
+Epoch 238/2500 (lr=1e-06), train loss 0.00012
+Epoch 239/2500 (lr=1e-06), train loss 0.00012
+Training for epoch 240 done, starting evaluation
+Epoch 240 performance:
+metrics/test.rmse:  1.443
+metrics/test.rmse_pcutoff:1.390
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.443
+metrics/test.rmse_detections_pcutoff:1.390
+Epoch 240/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00045
+Epoch 241/2500 (lr=1e-06), train loss 0.00012
+Epoch 242/2500 (lr=1e-06), train loss 0.00012
+Epoch 243/2500 (lr=1e-06), train loss 0.00012
+Epoch 244/2500 (lr=1e-06), train loss 0.00012
+Epoch 245/2500 (lr=1e-06), train loss 0.00011
+Epoch 246/2500 (lr=1e-06), train loss 0.00012
+Epoch 247/2500 (lr=1e-06), train loss 0.00012
+Epoch 248/2500 (lr=1e-06), train loss 0.00012
+Epoch 249/2500 (lr=1e-06), train loss 0.00011
+Training for epoch 250 done, starting evaluation
+Epoch 250 performance:
+metrics/test.rmse:  1.441
+metrics/test.rmse_pcutoff:1.388
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.441
+metrics/test.rmse_detections_pcutoff:1.388
+Epoch 250/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00044
+Epoch 251/2500 (lr=1e-06), train loss 0.00012
+Epoch 252/2500 (lr=1e-06), train loss 0.00012
+Epoch 253/2500 (lr=1e-06), train loss 0.00011
+Epoch 254/2500 (lr=1e-06), train loss 0.00012
+Epoch 255/2500 (lr=1e-06), train loss 0.00012
+Epoch 256/2500 (lr=1e-06), train loss 0.00013
+Epoch 257/2500 (lr=1e-06), train loss 0.00012
+Epoch 258/2500 (lr=1e-06), train loss 0.00012
+Epoch 259/2500 (lr=1e-06), train loss 0.00011
+Training for epoch 260 done, starting evaluation
+Epoch 260 performance:
+metrics/test.rmse:  1.444
+metrics/test.rmse_pcutoff:1.391
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.444
+metrics/test.rmse_detections_pcutoff:1.391
+Epoch 260/2500 (lr=1e-06), train loss 0.00011, valid loss 0.00045
+Epoch 261/2500 (lr=1e-06), train loss 0.00012
+Epoch 262/2500 (lr=1e-06), train loss 0.00013
+Epoch 263/2500 (lr=1e-06), train loss 0.00011
+Epoch 264/2500 (lr=1e-06), train loss 0.00011
+Epoch 265/2500 (lr=1e-06), train loss 0.00012
+Epoch 266/2500 (lr=1e-06), train loss 0.00011
+Epoch 267/2500 (lr=1e-06), train loss 0.00011
+Epoch 268/2500 (lr=1e-06), train loss 0.00012
+Epoch 269/2500 (lr=1e-06), train loss 0.00011
+Training for epoch 270 done, starting evaluation
+Epoch 270 performance:
+metrics/test.rmse:  1.444
+metrics/test.rmse_pcutoff:1.391
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.444
+metrics/test.rmse_detections_pcutoff:1.391
+Epoch 270/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00045
+Epoch 271/2500 (lr=1e-06), train loss 0.00012
+Epoch 272/2500 (lr=1e-06), train loss 0.00011
+Epoch 273/2500 (lr=1e-06), train loss 0.00011
+Epoch 274/2500 (lr=1e-06), train loss 0.00011
+Epoch 275/2500 (lr=1e-06), train loss 0.00011
+Epoch 276/2500 (lr=1e-06), train loss 0.00011
+Epoch 277/2500 (lr=1e-06), train loss 0.00012
+Epoch 278/2500 (lr=1e-06), train loss 0.00012
+Epoch 279/2500 (lr=1e-06), train loss 0.00013
+Training for epoch 280 done, starting evaluation
+Epoch 280 performance:
+metrics/test.rmse:  1.442
+metrics/test.rmse_pcutoff:1.389
+metrics/test.mAP:   100.000
+metrics/test.mAR:   100.000
+metrics/test.rmse_detections:1.442
+metrics/test.rmse_detections_pcutoff:1.389
+Epoch 280/2500 (lr=1e-06), train loss 0.00012, valid loss 0.00045
+Epoch 281/2500 (lr=1e-06), train loss 0.00012
