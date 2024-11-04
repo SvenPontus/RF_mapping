@@ -6,7 +6,7 @@ video_path = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/test_10_000_epochs-conv_vid-20
 config_path = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/test_10_000_epochs-conv_vid-2024-10-28/config.yaml'
 
 # Create the training dataset
-# deeplabcut.create_training_dataset(config_path)
+deeplabcut.create_training_dataset(config_path)
 
 # Start training with log output every 100 iterations and save the model every 5000 iterations
 # deeplabcut.train_network(config_path, maxiters=1_000_000, displayiters=100, saveiters=5000)
@@ -38,3 +38,4 @@ deeplabcut.create_labeled_video(config_path, [
                                         video_path + 'squaretest_converted.mp4',
                                         '/local/data2/LIA_LIU_PONTUS/LIA_LIU/untrained_videos/GH010342_converted.mp4'
                                         ])
+

@@ -12,4 +12,12 @@ Create new project
 
 Extract frames
     1. Click on extract frames
+
+Train network    
+    Change epochs and other parameters
+    1. Run deeplabcut.create_training_dataset(config=config_path)
+    2. Open DLC Gui Edit pose_cfg.yaml
+    3. Change train_settings, epochs
+
+Evaluate
     

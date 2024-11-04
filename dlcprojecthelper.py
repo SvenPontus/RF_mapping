@@ -123,7 +123,7 @@ class DLCProjectHelper:
         
         # Gather paths of all videos in the project path
         video_dir = os.path.join(project_path, 'videos')
-        video_paths = [os.path.join(video_dir, f) for f in\
+        video_path = [os.path.join(video_dir, f) for f in\
                         os.listdir(video_dir) if f.endswith(('.mp4', '.avi'))]
         
-        return config_path, video_paths
+        return config_path, video_path
