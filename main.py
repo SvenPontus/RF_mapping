@@ -1,7 +1,7 @@
 import deeplabcut
 from dlcprojecthelper import DLCProjectHelper as dph
 """
-video_path = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/test_10_000_epochs-conv_vid-2024-10-28/videos/' 
+video_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_101_epoch_100-conv_vid-2024-11-06"
 
 # Specify the path to your config.yaml file
 config_path = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/test_10_000_epochs-conv_vid-2024-10-28/config.yaml'
@@ -41,7 +41,7 @@ deeplabcut.create_labeled_video(config_path, [
                                         ])
 """
 
-project_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_50_test-conv_vid-2024-11-04"
+project_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_101_epoch_100-conv_vid-2024-11-06"
 
 config_path, video_path = dph.get_config_and_video_paths(project_path=project_path)
 

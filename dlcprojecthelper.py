@@ -39,16 +39,16 @@ class DLCProjectHelper:
             This method prints the mean likelihood of each file and
             does not return any value.
         """
-
+        video_path = project_path + "/videos/"
         # Search for .h5 files in the project path
-        h5_files = [f for f in os.listdir(project_path) if f.endswith('.h5')]
+        h5_files = [f for f in os.listdir(video_path) if f.endswith('.h5')]
         
         if not h5_files:
             print("No .h5 files found in the directory.")
             return
         
         for i, file_name in enumerate(h5_files, 1):
-            file_path = os.path.join(project_path, file_name)
+            file_path = os.path.join(video_path, file_name)
     
             # Get video name
             display_name = file_name.split('_converted')[0]
@@ -82,7 +82,7 @@ class DLCProjectHelper:
             and does not return any value.
         """
 
-        log_file_path = os.path.join(project_path, 'training', 'log.txt')
+        log_file_path = project_path + '/dlc-models-pytorch/iteration-1/res_50_testNov4-trainset90shuffle1/train/train.txt'
         
         if not os.path.exists(log_file_path):
             print("Log file not found in the specified path.")
@@ -154,6 +154,7 @@ class DLCProjectHelper:
         
         return config_path, video_path
 """  
+
 
 
 

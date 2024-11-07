@@ -3,10 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from skimage.transform import ProjectiveTransform
 from skimage.measure import ransac
-
 import os
-import pandas as pd
-import numpy as np
+
 
 # Initializing relative to libraries and PC
 

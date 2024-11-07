@@ -1,9 +1,13 @@
 Monday, Start a new project and do all instructions videos?
-* take from "test_7_converted_vid"
+* take from "test_7_converted_vid" [V]
 
-Skeleton improvment?
+Skeleton improvment? []
 
-Test different neural networks
+Test different neural networks []
 
+Do a drawio flowchart []
+
+Kivy Gui []
+    * To do a program to put in unseen data and get a video
 
 

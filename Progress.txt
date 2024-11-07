@@ -102,3 +102,12 @@ Pontus, Teams Meeting with Sarah 16:45
 2024-11-04
 * Start new project res_50
 * Instruction documents
+
+2024-11-05
+* meeting with Sarah and Basil
+
+2024-11-06
+* Evaluate res_50_test model
+* Created res_101_epoch_100 project
+* Setup for Kivy
+* Homography code
