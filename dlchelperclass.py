@@ -43,6 +43,8 @@ class DlcHelperClass:
             This method creates a text file with the mean likelihood for each .h5 file.
         """
         video_path = project_path + "/videos/"
+
+        project_name = project_path.split('/')[-1].split('-')[0]
         # Search for .h5 files in the project path
         h5_files = [f for f in os.listdir(video_path) if f.endswith('.h5')]
         
@@ -55,7 +57,7 @@ class DlcHelperClass:
 
         # Open the file for writing
         with open(output_file, 'w') as f:
-            f.write("Mean Likelihood for Each File:\n\n")  # Header for the file
+            f.write(f"{project_name}\n\nMean Likelihood for Each File:\n\n")  # Header for the file
 
             for i, file_name in enumerate(h5_files, 1):
                 file_path = os.path.join(video_path, file_name)

@@ -1,5 +1,5 @@
 import deeplabcut
-from dlcprojecthelper import DLCProjectHelper as dph
+from dlchelperclass import DlcHelperClass as dhc 
 """
 video_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_101_epoch_100-conv_vid-2024-11-06"
 
@@ -43,6 +43,6 @@ deeplabcut.create_labeled_video(config_path, [
 
 project_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_101_epoch_100-conv_vid-2024-11-06"
 
-config_path, video_path = dph.get_config_and_video_paths(project_path=project_path)
+config_path, video_path = dhc.get_config_and_video_paths(project_path=project_path)
 
 deeplabcut.train_network(config_path)
