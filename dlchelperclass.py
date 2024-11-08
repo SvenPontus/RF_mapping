@@ -185,6 +185,36 @@ class DlcHelperClass:
         # Gather paths of all videos in the project path
         video_dir = os.path.join(project_path, 'videos')
         video_path = [os.path.join(video_dir, f) for f in\
-                        os.listdir(video_dir) if f.endswith(('.mp4', '.avi'))]
+                        os.listdir(video_dir) if f.endswith(('.mp4', '.avi', '.mov', '.mkv'))]
         
         return config_path, video_path
+    
+    @staticmethod
+    def get_video_paths(path):
+        """
+        Retrieves a list of full paths for all video files in the specified directory.
+        
+        Args:
+            videos_dir_path (str): Path to the directory containing video files.
+            
+        Returns:
+            list: A list of full paths to video files with specified extensions, 
+                  or an empty list if an error occurs or the directory is empty.
+        """
+        video_extensions = ('.mp4', '.avi', '.mov', '.mkv')
+        video_paths = []
+        
+        try:
+            video_paths = [
+                os.path.join(path, file) 
+                for file in os.listdir(path) 
+                if file.lower().endswith(video_extensions)
+            ]
+        except FileNotFoundError:
+            print(f"Error: Directory '{path}' does not exist.")
+        except PermissionError:
+            print(f"Error: Insufficient permissions to access '{path}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+        
+        return video_paths

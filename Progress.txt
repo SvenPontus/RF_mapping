@@ -111,3 +111,15 @@ Pontus, Teams Meeting with Sarah 16:45
 * Created res_101_epoch_100 project
 * Setup for Kivy
 * Homography code
+
+2024-11-07
+* Homography code
+* Classhelper.py
+* instructions
+* example.py file
+
+2024-11-08
+* Meeting
+* labeling
+* Homography
+* relabeling
