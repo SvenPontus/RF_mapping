@@ -20,4 +20,9 @@ Train network
     3. Change train_settings, epochs
 
 Evaluate
+    Creates train_loss
     
+
+Finetune
+    1. Go to dlc-models-pytorch and copy your snapshot-(epochs).pt path from your latest iteration 
+    2. Paste your path into init_weights line in pose_cfg.yaml file

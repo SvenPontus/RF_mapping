@@ -123,3 +123,13 @@ Pontus, Teams Meeting with Sarah 16:45
 * labeling
 * Homography
 * relabeling
+
+2024-11-11
+* Meeting with Basil
+* labeling
+* post-processing class
+
+2024-11-12
+* Set up for 9 new project to train
+* Finetuning
+

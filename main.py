@@ -41,8 +41,57 @@ deeplabcut.create_labeled_video(config_path, [
                                         ])
 """
 
-project_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/res_101_epoch_100-conv_vid-2024-11-06"
+"""
+
+project_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/dekr_w18-conv_vid-2024-11-12"
 
 config_path, video_path = dhc.get_config_and_video_paths(project_path=project_path)
 
 deeplabcut.train_network(config_path)
+
+deeplabcut.evaluate_network(config_path, plotting=True)
+
+deeplabcut.analyze_videos(project_path, video_path, pcutoff=0.9)
+
+deeplabcut.create_labeled_video(config_path, videos=video_path, pcutoff=0.9)
+
+dhc.save_mean_likelihood_to_file(project_path=project_path)
+dhc.plot_loss_to_png(project_path)
+
+"""
+
+paths = [
+    "dekr_w18-conv_vid-2024-11-12",
+    "dekr_w32-conv_vid-2024-11-12",
+    "dekr_w48-conv_vid-2024-11-12",
+    "dlcrnet_stride32_ms5-conv_vid-2024-11-12",
+    "hrnet_w18-conv_vid-2024-11-12",
+    "hrnet_w32-conv_vid-2024-11-12",
+    "HRNet_w48-conv_vid-2024-11-12",
+    "res_50-conv_vid-2024-11-12",
+    "res_101-conv_vid-2024-11-12"
+]
+
+
+base_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/"
+
+
+for path in paths:
+    project_path = base_path + path.strip()  
+    
+    config_path, video_path = dhc.get_config_and_video_paths(project_path=project_path)
+    
+    deeplabcut.train_network(config_path)
+    
+    deeplabcut.evaluate_network(config_path, plotting=True)
+    
+    deeplabcut.analyze_videos(config_path, video_path)
+    
+    deeplabcut.create_labeled_video(config_path, videos=video_path, pcutoff=0.8)
+
+    dhc.save_mean_likelihood_to_file(project_path=project_path)
+    dhc.plot_loss_to_png(project_path)
+
+
+
+

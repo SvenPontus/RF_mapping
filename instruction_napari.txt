@@ -11,3 +11,4 @@ Relabel
 3. Make sure only labels from CollectedData(nickname)[1] is visible
 4. For every wrong label frame change in machinelabels file
 5. Important to do this in same session! Otherwise it will NOT be properly saved  
+6. Save Selected Layers, both machine file and CollectedData(nickname)[1] or save all layers

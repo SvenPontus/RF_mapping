@@ -176,5 +176,13 @@ test_7_converted_vid-conv_vid-2024-10-24/
 videos_converted/
 res_50_test-conv_vid-2024-11-04/
 res_101_epoch_100-conv_vid-2024-11-06/
-
-
+res_50_test-conv_vid-2024-11-04_finetuned/
+dekr_w18-conv_vid-2024-11-12/
+dekr_w32-conv_vid-2024-11-12/
+dekr_w48-conv_vid-2024-11-12/
+dlcrnet_stride32_ms5-conv_vid-2024-11-12/
+hrnet_w18-conv_vid-2024-11-12/
+hrnet_w32-conv_vid-2024-11-12/
+HRNet_w48-conv_vid-2024-11-12/
+res_50-conv_vid-2024-11-12/
+res_101-conv_vid-2024-11-12/

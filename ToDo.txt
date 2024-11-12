@@ -8,3 +8,28 @@ Keep relabeling res_50_test, 2 videos done..
 
 Then.. Get new videos, relabel outlier, then retrain
 
+Archetectures to try:
+
+hrnet_w18
+dekr_w18
+
+hrnet_w32
+dekr_w32
+dlcrnet_stride32_ms5
+
+HRNet_w48
+dekr_w48
+
+res_50
+res_101
+
+
+Fix this method: def save_mean_likelihood_to_file(project_path):
+
+
+
+
+
+
+
+
