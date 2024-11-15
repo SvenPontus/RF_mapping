@@ -2050,3 +2050,6 @@ Epoch 96/200 (lr=0.0001), train loss 0.00002
 Number of iterations: 500, loss: 0.00001, lr: 0.0001
 Epoch 97/200 (lr=0.0001), train loss 0.00002
 Number of iterations: 500, loss: 0.00001, lr: 0.0001
+Epoch 98/200 (lr=0.0001), train loss 0.00002
+Number of iterations: 500, loss: 0.00001, lr: 0.0001
+Epoch 99/200 (lr=0.0001), train loss 0.00002
