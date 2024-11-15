@@ -1,5 +1,7 @@
 <MyScreenManager>:
     MainPage:
+    Info:
+    PredictVideo:
 
 <MainPage>:
     name: 'main_page'
@@ -14,7 +16,7 @@
                 size: self.size
 
         Label:
-            text: '[b]RF Mapping Applikation[/b]'
+            text: '[b]RF Mapping Application[/b]'
             markup: True
             font_size: '36sp'
             halign: 'center'
@@ -26,7 +28,7 @@
 
         Widget:
             size_hint_y: None
-            height: 50
+            height: 30
 
         TextInput:
             id: user_video_path
@@ -37,6 +39,15 @@
             width: 600
             size_hint_x: None
             pos_hint: {'center_x': 0.5}
+        
+        Label:
+            id: path_status_label
+            text: "No path verified yet"
+            font_size: 16
+            color: 1, 0, 0, 1  # Red by default (assuming invalid path)
+            size_hint_y: None
+            height: 30
+            pos_hint: {'center_x': 0.5}
 
         Button:
             text: "Open File Chooser"
@@ -46,11 +57,106 @@
             size_hint_x: None
             pos_hint: {'center_x': 0.5}
             on_release: root.open_filechooser()
+        
+        Button:
+            text: "Predict and label your video"
+            size_hint_y: None
+            height: 40
+            width: 200
+            size_hint_x: None
+            pos_hint: {'center_x': 0.5}
+            on_release: root.predict_video_button()
+        
+        Button:
+            text: "Info"
+            size_hint_y: None
+            height: 40
+            width: 200
+            size_hint_x: None
+            pos_hint: {'center_x': 0.5}
+            on_release: root.info_button()
 
         Widget:
             size_hint_y: None
-            height: 350
+            height: 280
         
+        Button:
+            text: "Exit"
+            font_size: 18
+            size_hint_y: None
+            height: 40
+            width: 200
+            size_hint_x: None
+            background_color: 0.6, 0.8, 1, 1
+            pos_hint: {'center_x': 0.5}
+            on_press: app.exit_app()
+
+<Info>:
+    name: 'info'
+    BoxLayout:
+        orientation: 'vertical'
+        
+        canvas.before:
+            Color:
+                rgba: 0.9, 0.9, 0.9, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            id: info_label 
+            text: ""
+            font_size: 16
+            halign: "center"
+            valign: "middle"
+            color: 0, 0, 0, 1
+            text_size: self.size
+        Button:
+            text: "Back to mainpage"
+            font_size: 18
+            size_hint_y: None
+            height: 40
+            width: 200
+            size_hint_x: None
+            background_color: 0.6, 0.8, 1, 1
+            pos_hint: {'center_x': 0.5}
+            on_release: root.back_to_main_menu()
+
+        Button:
+            text: "Exit"
+            font_size: 18
+            size_hint_y: None
+            height: 40
+            width: 200
+            size_hint_x: None
+            background_color: 0.6, 0.8, 1, 1
+            pos_hint: {'center_x': 0.5}
+            on_press: app.exit_app()
+
+<PredictVideo>:
+    name: 'predict_video'
+    BoxLayout:
+        orientation: 'vertical'
+        
+        canvas.before:
+            Color:
+                rgba: 0.9, 0.9, 0.9, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: "Prediction started on the video..."
+            font_size: 24
+        Button:
+            text: "Back to mainpage"
+            font_size: 18
+            size_hint_y: None
+            height: 40
+            width: 200
+            size_hint_x: None
+            background_color: 0.6, 0.8, 1, 1
+            pos_hint: {'center_x': 0.5}
+            on_release: root.back_to_main_menu()
+
         Button:
             text: "Exit"
             font_size: 18
