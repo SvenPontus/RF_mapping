@@ -133,3 +133,16 @@ Pontus, Teams Meeting with Sarah 16:45
 * Set up for 9 new project to train
 * Finetuning
 
+2024-11-13
+* Gui
+* Instructions
+* gridsearch
+
+2024-11-14
+* Gui
+* DLCHelperClass
+
+2024-11-15
+* Evulaute models
+* Meeting
+

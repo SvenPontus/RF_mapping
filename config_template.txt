@@ -15,7 +15,7 @@ project_path: /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18
 engine: pytorch
 
 
-# Annotation data set configuration (and individual video cropping parameters)
+# Annotation data set configuration (path for your videos)
 video_sets:
   /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretest.mp4:
     crop: 0, 1274, 0, 720

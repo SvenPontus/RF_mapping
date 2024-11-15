@@ -1,28 +1,109 @@
-When deeplabcut installation is done,
+Make sure you have git installed.
+https://git-scm.com/
+ 
+To Install Deeplabcut. 
+Visit https://deeplabcut.github.io/DeepLabCut/docs/installation.html
+and follow the instructions.
+------------------------------------------------------------------------
+In our case on a linux:
+type in terminal: 
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+terminal Miniconda3-latest-Linux-x86_64.sh
+ 
+Follow the prompts:
+ 
+Press Enter to review the license agreement.
+Type yes to agree to the terms.
+Choose the installation location (the default is typically ~/miniconda3).
+ 
+type in terminal:
+~/miniconda3/bin/conda init
+ 
+Restart you terminal or type in terminal:
+source ~/.terminalrc
+ 
+Verify installation, type in terminal:
+conda --version
+ 
+Download YAML-file from github. Download raw file from
+https://github.com/DeepLabCut/DeepLabCut/blob/main/conda-environments/DEEPLABCUT.yaml
+ 
+ 
+Once miniconda is installed, be sure to be in the same directory
+as the downloaded DEEPLABCUT.YAML file.
+ 
+type in terminal:
+conda env create -f DEEPLABCUT.yaml
+conda activate DEEPLABCUT
+ 
+Now you should be in the venv and (Deeplabcut) should be visible on the left
+side in your terminal
+------------------------------------------------------------------------
+ 
+When Deeplabcut installation is done,
 Run this line in terminal to launch the GUI: 
     python -m deeplabcut
+ 
+## All actions below can be done in python instead of the DLC GUI ##
+    (See example.ipynb)
 
 Create new project
-    1. name your project
-    2. name of expirementer
-    3. specify filepath to where the project will be store
-    4. filepath to your videos
-        [V] select the videos you want to the project 
-    5. [V] copy videos to project folder
-
-Extract frames
-    1. Click on extract frames
-
-Train network    
-    Change epochs and other parameters
-    1. Run deeplabcut.create_training_dataset(config=config_path)
-    2. Open DLC Gui Edit pose_cfg.yaml
-    3. Change train_settings, epochs
-
-Evaluate
-    Creates train_loss
-    
-
-Finetune
-    1. Go to dlc-models-pytorch and copy your snapshot-(epochs).pt path from your latest iteration 
-    2. Paste your path into init_weights line in pose_cfg.yaml file
+    1. Name your project
+    2. Name of experimenter
+    (Be sure to use same name if you want to re-use labeled data from previous projects)
+    3. Specify filepath to where the project will be store
+    4. Filepath to your videos
+        [V] Select the videos you want to the project 
+    5. [V] Copy videos to project folder
+ 
+    Now DLC have created a project folder with a config.yaml file
+  
+Extract frames:
+    1. Click on the tab "Extract frames"
+    (Number of frames to pick is configured in the YAML-file, 
+    also the train/test ratio)
+ 
+Label frames:
+    1. Click on "Label frames" and Napari will launch, start labeling.
+    (See instruction_napari.txt for instructions)
+ 
+Create training dataset:
+    1. Choose you preferred network and augmentation,
+        click on "Create training dataset"
+ 
+    Now a pose_cfg.yaml and a pytorch_config.yaml is created
+    in DLC_models folder.
+    Here you can modify epochs, network, iterations, batch-size etc.
+ 
+Train network:
+    1. Change epochs, iterations and other parameters
+    (Can be changed in the yaml files)
+    2. Click on "Train network"
+ 
+Evaluate network: 
+    1. Click on "Evaluate Network" to see the model performance.
+    (Set plotting=True to get plots)
+ 
+Analyze videos:
+    1. Mark the videos you want and click "Analyze video"
+ 
+Create videos:
+    1. Mark the videos you want and click "Create video"
+    This will generate new videos to you folder that includes labeled points.
+ 
+    If you are happy with the models performance, you can add a new video
+    that the model has not trained on and see its predictions.
+        1. Analyze video
+        2. Create Videos
+ 
+    If you want to change labels that the model predicted wrong.
+ 
+Extract outlier frames:
+    1. Click on "Extract frames"
+    (TODO)
+    2. "Click on "Labeling GUI" to open Napari and re-label.
+    (see instruction_napari.txt for instructions)
+    3. When done re-labeling, click on "Merge data"
+    4. Create training dataset with added data.
+    5. Train network
+    (TODO)
