@@ -5,11 +5,17 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 import os
 
+from system_for_gui import SystemForGui as SFG
+
 class MainPage(Screen):
+
+    def __init__(self, **kwargs):
+        super(MainPage, self).__init__(**kwargs)  # Passes any additional arguments to Screen
+        self.video_path_correct = False
     
     def open_filechooser(self):
         content = BoxLayout(orientation='vertical')
-        filechooser = FileChooserListView(filters=['*.mp4', '*.avi', '*.mov'])  # Filter for video files
+        filechooser = FileChooserListView(filters=['*.mp4', '*.avi', '*.mov', '*.MP4'])  # Filter for video files
         content.add_widget(filechooser)
 
         # "Select" button to choose the file and validate the path
@@ -33,14 +39,16 @@ class MainPage(Screen):
             
             # Verify the video path
             video_path = selection[0]
-            if os.path.isfile(video_path) and video_path.lower().endswith(('.mp4', '.avi', '.mov')):
+            if os.path.isfile(video_path) and video_path.lower().endswith(('.mp4', '.avi', '.mov', '.MP4')):
                 # Update label to show success in green
                 self.ids.path_status_label.text = "The video path is valid."
                 self.ids.path_status_label.color = (0, 1, 0, 1)  # Green color
+                self.video_path_correct = True
             else:
                 # Update label to show failure in red
                 self.ids.path_status_label.text = "Invalid video path. Please select a valid video file."
                 self.ids.path_status_label.color = (1, 0, 0, 1)  # Red color
+                self.video_path_correct = False
 
         # Close the popup after selection
         self.popup.dismiss()
@@ -49,4 +57,15 @@ class MainPage(Screen):
         self.manager.current = 'info'
 
     def predict_video_button(self):
-        self.manager.current = 'predict_video'
+        if self.video_path_correct:  # Check if the video path is valid
+            self.manager.current = 'predict_video'
+            # Uncomment and modify the following lines to use the SFG system for video analysis:
+            predict_video = SFG(self.ids.user_video_path.text)
+            predict_video.analyze_video()
+            predict_video.label_video()
+        else:
+            # Display a warning if the video path is invalid
+            self.ids.path_status_label.text = "Please select a valid video file first."
+            self.ids.path_status_label.color = (1, 0.5, 0, 1)  # Orange warning color
+
+

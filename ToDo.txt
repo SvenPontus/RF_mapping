@@ -1,3 +1,7 @@
+
+Finetune stride32, hrnet_w32, hrnet_w48
+
+
 Fix this method: def save_mean_likelihood_to_file(project_path):
 * The order in the output, and then different iterations need to be distinguished
 
@@ -5,6 +9,9 @@ Fix this method: def save_mean_likelihood_to_file(project_path):
 What from the original project needs to predict a new video?
 
 Predict unseen data in example file
+
+
+
 
 
 

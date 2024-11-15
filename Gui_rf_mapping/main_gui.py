@@ -7,7 +7,7 @@ from screens.info import Info
 from screens.predict_video import PredictVideo
 
 class GuiMain(App):
-
+    
     def build(self):
         self.title = "RF Mapping"
         Builder.load_file('frontend.kv')
