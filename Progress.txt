@@ -143,6 +143,13 @@ Pontus, Teams Meeting with Sarah 16:45
 * DLCHelperClass
 
 2024-11-15
-* Evulaute models
+* Evaluate models
 * Meeting
+
+2024-11-18
+* Train new models
+
+2024-11-19
+* Evaluate trained models 
+
 
