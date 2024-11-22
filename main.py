@@ -4,9 +4,7 @@ from dlchelperclass import DlcHelperClass as dhc
 # For running many projects
 
 paths = [
-    "dlcrnet_stride32_ms5_2-conv_vid-2024-11-18",
-    "hrnet_w32_2-conv_vid-2024-11-18",
-    "hrnet_w48_2-conv_vid-2024-11-18"
+    "dlcrnet_stride32_ms5_batchsize_8-conv_vid-2024-11-21"
 ]
 
 

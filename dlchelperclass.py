@@ -53,12 +53,13 @@ class DlcHelperClass:
             return
         
         # Path to save the mean likelihood results
-        output_file = os.path.join(project_path, 'avg_likelihood.txt')
+        output_file = os.path.join(project_path, 'avg_likelihood_sum.txt')
 
         # Open the file for writing
         with open(output_file, 'w') as f:
             f.write(f"{project_name}\n\nMean Likelihood for Each File:\n\n")  # Header for the file
 
+            all_likelihood = []
             for i, file_name in enumerate(h5_files, 1):
                 file_path = os.path.join(video_path, file_name)
         
@@ -70,14 +71,22 @@ class DlcHelperClass:
                     df = pd.read_hdf(file_path)
                     likelihood_df = df.xs('likelihood', level=2, axis=1)
                     mean_likelihood = likelihood_df.values.mean()
+                    all_likelihood.append(mean_likelihood)
                     
                     # Write the mean likelihood to the file
                     f.write(f"Mean likelihood for {display_name}: {mean_likelihood:.4f}\n")
                 except Exception as e:
                     f.write(f"Couldn't read file {file_name}: {e}\n")
+            
+            # Calculate the overall average likelihood
+            if all_likelihood:         
+                overall_avg = sum(all_likelihood) / len(all_likelihood)         
+                f.write(f"\nOverall Average Likelihood Across All Files: {overall_avg:.4f}\n")     
+            
+            else: 
+                f.write("\nNo likelihood data found in the files.\n")
 
         print(f"Mean likelihoods saved to {output_file}")
-
 
     @staticmethod
     def plot_loss_to_png(project_path):
@@ -149,7 +158,19 @@ class DlcHelperClass:
         
         except Exception as e:
             print(f"Failed to process {stats_file}: {e}")
-    
+
+        # Append the last 5 loss values to 'avg_likelihood_sum.txt'
+        avg_likelihood_file = os.path.join(project_path, 'avg_likelihood_sum.txt')
+        if os.path.exists(avg_likelihood_file):
+            with open(avg_likelihood_file, 'a') as f:
+                f.write("\nLast 5 Training Losses:\n")
+                f.write(", ".join([f"{x:.4f}" for x in train_losses[-5:]]) + "\n")
+                f.write("Last 5 Validation Losses:\n")
+                f.write(", ".join([f"{x:.4f}" for x in val_losses[-5:]]) + "\n")
+            print(f"Appended loss values to {avg_likelihood_file}")
+        else:
+            print(f"{avg_likelihood_file} not found. Loss values not appended.")
+
 
     @staticmethod
     def get_config_and_video_paths(project_path):

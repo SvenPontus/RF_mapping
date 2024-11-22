@@ -86,5 +86,5 @@ def convert_video(input_path, crop_x=1274, crop_y=720, target_fps=30):
     print(f"Processed frames: {processed_frames} at target FPS: {target_fps}")
 
 # Example usage:
-input_video = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/basil_latest_video/GH010342.MP4'
+input_video = '/local/data2/LIA_LIU_PONTUS/LIA_LIU/untrained_videos/GH010346.MP4'
 convert_video(input_video)

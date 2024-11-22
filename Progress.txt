@@ -152,4 +152,15 @@ Pontus, Teams Meeting with Sarah 16:45
 2024-11-19
 * Evaluate trained models 
 
+2024-11-20
+* Labeling
+* Sync nerv and label data
+* Fintetune
+
+2024-11-21
+* Evaluate finetuned models 
+* Small gridsearch of hyperparameters
+
+2024-11-22
+* Meeting 10-12
 
