@@ -59,10 +59,7 @@ import glob
 # Predict several videos and models
 
 paths = [
-    "one_vid_hrnet48-liu-2024-11-25",
-    "one_vid_res50-liu-2024-11-25",
-    "one_vid_stride32-liu-2024-11-25"
-
+    "hrnet_w48_2-conv_vid-2024-11-18",
 ]
 base_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/"
 
@@ -71,7 +68,7 @@ for path in paths:
     
     config_path, video_path = dhc.get_config_and_video_paths(project_path=project_path)
 
-    video_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/untrained_videos/Crop_predict_24_11_25/"
+    video_path = "/local/data2/LIA_LIU_PONTUS/LIA_LIU/untrained_videos/Predict_unseen_6_vid_hrnet_w48_2_2024_11_18"
 
     # Assuming your videos have extensions like .mp4, .avi, etc.
     video_extensions = ('*.mp4', '*.avi', '*.mkv')  # Add other extensions if needed

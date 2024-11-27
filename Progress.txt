@@ -167,3 +167,9 @@ Pontus, Teams Meeting with Sarah 16:45
 2024-11-25
 * Trained "one_vid" with 3 different archtectures,labeled 25 frames
 * Powerpoint
+
+2024-11-26
+* Powerpoint
+
+2024-11-27
+* Meeting with Sarah and Magnus
