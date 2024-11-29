@@ -1,25 +1,3 @@
-# Project definitions
-
-Task: testing_pontus
-scorer: testing
-date: Oct18
-multianimalproject: false
-identity:
-
-
-# Project path (change when moving around)
-project_path: /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18
-
-
-# Default DeepLabCut engine to use for shuffle creation (either pytorch or tensorflow)
-engine: pytorch
-
-
-# Annotation data set configuration (path for your videos)
-video_sets:
-  /local/data2/LIA_LIU/testing_pontus-testing-2024-10-18/videos/squaretest.mp4:
-    crop: 0, 1274, 0, 720
-
 bodyparts:
 - FR1  # Top Red (Monofilament)
 - FR2  # Bottom Red (Monofilament)
@@ -72,7 +50,7 @@ colormap: viridis  # Adjust colormap as preferred
 TrainingFraction:
 - 0.90  # Proportion of your dataset that will be used for training the model
 iteration: 0
-default_net_type: resnet_50
+default_net_type: hrnet_w48
 default_augmenter: default #(Set to false if using manual values)
 snapshotindex: -1  # How often the model will be saved (-1 = zero saves during training) 
 detector_snapshotindex: -1 # How often the model will be saved (-1 = zero saves during training)
